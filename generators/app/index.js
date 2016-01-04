@@ -33,7 +33,6 @@ module.exports = yeoman.generators.Base.extend({
 
   prompting: function () {
     var done = this.async();
-    this.log(jhipsterVar);
 
 /*    if (jhipsterVar.searchEngine !== 'elasticsearch') {
       this.log(chalk.red('Error!') + ' The JHipster Elasticsearch Indexer module only works with Elasticsearch');
