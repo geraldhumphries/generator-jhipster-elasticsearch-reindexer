@@ -6,6 +6,8 @@
 
 This is a [JHipster](http://jhipster.github.io/) module, that is meant to be used in a JHipster application.
 
+This module will generate a service using your JHipster entities that allows you to delete and rewrite all rows from your Elasticsearch index using rows from your main datastore. This is useful if any changes have been made to the main database outside of the application, like inserting rows using liquibase or migrating data from another database. 
+
 # Prerequisites
 
 As this is a [JHipster](http://jhipster.github.io/) module, we expect you have JHipster and its related tools already installed:
