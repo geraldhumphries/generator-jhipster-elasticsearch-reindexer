@@ -77,11 +77,10 @@ module.exports = yeoman.generators.Base.extend({
 
   install: function () {
     var done = this.async();
-    this.installDependencies();
     done();
   },
 
   end: function () {
-    console.log('End');
+    console.log('All done!');
   }
 });
