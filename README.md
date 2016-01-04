@@ -12,6 +12,8 @@ As this is a [JHipster](http://jhipster.github.io/) module, we expect you have J
 
 - [Installing JHipster](https://jhipster.github.io/installation.html)
 
+You also need to have created entities using JHipster.
+
 # Installation
 
 To install this module:
@@ -26,6 +28,18 @@ npm update -g generator-jhipster-elasticsearch-reindexer
 ```
 
 # Usage
+
+```bash
+yo jhipster-elasticsearch-reindexer
+```
+
+This will write all JHipster entities to a service that can be called through your API. This needs to be run any time you add or remove an entity to your project.
+
+To call the service, you need to send a POST request to `api/elasticsearch/index`. Ex:
+
+```bash
+curl -X POST --header "Content-Type: application/json" --header "Accept: text/plain" --header "X-CSRF-TOKEN: 00000000-0000-0000-0000-000000000000" "http://localhost:8080/api/elasticsearch/index"
+```
 
 # License
 
