@@ -63,13 +63,11 @@ module.exports = yeoman.generators.Base.extend({
     var resourceDir = jhipsterVar.resourceDir;
     var webappDir = jhipsterVar.webappDir;
 
-    this.message = this.props.message;
     this.entityFiles = jhipsterVar.entityFiles;
 
     console.log('baseName=' + this.baseName);
     console.log('packageName=' + this.packageName);
     console.log('angularAppName=' + this.angularAppName);
-    console.log('message=' + this.message);
 
     this.template('src/main/java/package/web/rest/_ElasticsearchIndexResource.java', javaDir + 'web/rest/ElasticsearchIndexResource.java', this, {});
     this.template('src/main/java/package/service/_ElasticsearchIndexService.java', javaDir + 'service/ElasticsearchIndexService.java', this, {});
