@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import java.net.URISyntaxException;
 
 /**
- * REST controller for managing Client.
+ * REST controller for managing Elasticsearch index.
  */
 @RestController
 @RequestMapping("/api")
