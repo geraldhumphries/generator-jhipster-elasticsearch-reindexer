@@ -1,28 +1,29 @@
 {
-    "name": "generator-jhipster-elasticsearch-reindexer",
-    "version": "0.0.3",
-    "description": "Generate a service for reindexing all database rows for each of your entities",
-    "keywords": [
-        "yeoman-generator",
-        "jhipster-module"
-    ],
-    "homepage": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer",
-    "bugs": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer/issues",
-    "author": {
-        "name": "Gerald Humphries",
-        "email": "",
-        "url": ""
-    },
-    "files": [
-        "generators"
-    ],
-    "main": "generators/app/index.js",
-    "repository": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer",
-    "dependencies": {
-        "yeoman-generator": "0.21.1",
-        "chalk": "1.0.0",
-        "yosay": "1.0.2",
-        "generator-jhipster": ">=2.26.0"
-    },
-    "license": "Apache-2.0"
+  "name": "generator-jhipster-elasticsearch-reindexer",
+  "version": "0.0.3",
+  "description": "Generate a service for reindexing all database rows for each of your entities",
+  "keywords": [
+    "yeoman-generator",
+    "jhipster-module"
+  ],
+  "homepage": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer",
+  "bugs": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer/issues",
+  "author": {
+    "name": "Gerald Humphries",
+    "email": "",
+    "url": ""
+  },
+  "files": [
+    "generators"
+  ],
+  "main": "generators/app/index.js",
+  "repository": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer",
+  "dependencies": {
+    "chalk": "1.0.0",
+    "generator-jhipster": ">=2.26.0",
+    "shelljs": "0.5.3",
+    "yeoman-generator": "0.21.1",
+    "yosay": "1.0.2"
+  },
+  "license": "Apache-2.0"
 }
