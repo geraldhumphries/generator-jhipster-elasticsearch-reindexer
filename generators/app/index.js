@@ -1,7 +1,6 @@
 'use strict';
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
-var yosay = require('yosay');
 var packagejs = require(__dirname + '/../../package.json');
 var shelljs = require('shelljs');
 
@@ -12,10 +11,10 @@ jhipsterVar.jhipsterConfigDirectory = '.jhipster';
 // Stores JHipster functions
 var jhipsterFunc = {};
 
-module.exports = yeoman.generators.Base.extend({
+module.exports = yeoman.Base.extend({
 
   initializing: {
-    templates: function (args) {
+    compose: function (args) {
       this.composeWith('jhipster:modules', {
         options: {
           jhipsterVar: jhipsterVar,
@@ -25,9 +24,7 @@ module.exports = yeoman.generators.Base.extend({
     },
     displayLogo: function () {
       // Have Yeoman greet the user.
-      this.log(yosay(
-        'Welcome to the ' + chalk.red('JHipster elasticsearch-reindexer') + ' generator! ' + chalk.yellow('v' + packagejs.version)
-      ));
+      this.log('Welcome to the ' + chalk.red('JHipster elasticsearch-reindexer') + ' generator! ' + chalk.yellow('v' + packagejs.version + '\n'));
     }
   },
 
@@ -53,34 +50,33 @@ module.exports = yeoman.generators.Base.extend({
     }.bind(this));
   },
 
-  writing: function () {
-    var done = this.async();
+  writing: {
+    writeTemplates : function () {
+      this.baseName = jhipsterVar.baseName;
+      this.packageName = jhipsterVar.packageName;
+      this.angularAppName = jhipsterVar.angularAppName;
+      var javaDir = jhipsterVar.javaDir;
+      var resourceDir = jhipsterVar.resourceDir;
+      var webappDir = jhipsterVar.webappDir;
 
-    this.baseName = jhipsterVar.baseName;
-    this.packageName = jhipsterVar.packageName;
-    this.angularAppName = jhipsterVar.angularAppName;
-    var javaDir = jhipsterVar.javaDir;
-    var resourceDir = jhipsterVar.resourceDir;
-    var webappDir = jhipsterVar.webappDir;
+      this.message = this.props.message;
 
-    this.entityFiles = jhipsterVar.entityFiles;
+      this.entityFiles = jhipsterVar.entityFiles;
 
-    console.log('baseName=' + this.baseName);
-    console.log('packageName=' + this.packageName);
-    console.log('angularAppName=' + this.angularAppName);
+      this.template('src/main/java/package/web/rest/_ElasticsearchIndexResource.java', javaDir + 'web/rest/ElasticsearchIndexResource.java', this, {});
+      this.template('src/main/java/package/service/_ElasticsearchIndexService.java', javaDir + 'service/ElasticsearchIndexService.java', this, {});
+    },
 
-    this.template('src/main/java/package/web/rest/_ElasticsearchIndexResource.java', javaDir + 'web/rest/ElasticsearchIndexResource.java', this, {});
-    this.template('src/main/java/package/service/_ElasticsearchIndexService.java', javaDir + 'service/ElasticsearchIndexService.java', this, {});
-
-    done();
-  },
-
-  install: function () {
-    var done = this.async();
-    done();
+    registering: function () {
+      try {
+        jhipsterFunc.registerModule("generator-jhipster-elasticsearch-reindexer", "entity", "post", "app", "Generate a service for reindexing all database rows for each of your entities");
+      } catch (err) {
+        this.log(chalk.red.bold('WARN!') + ' Could not register as a jhipster entity post creation hook...\n');
+      }
+    }
   },
 
   end: function () {
-    console.log('All done!');
+    this.log('End of elasticsearch-reindexer generator');
   }
 });

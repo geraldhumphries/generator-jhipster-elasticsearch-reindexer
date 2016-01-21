@@ -1,6 +1,6 @@
 {
   "name": "generator-jhipster-elasticsearch-reindexer",
-  "version": "0.0.5",
+  "version": "0.0.0",
   "description": "Generate a service for reindexing all database rows for each of your entities",
   "keywords": [
     "yeoman-generator",
@@ -10,20 +10,41 @@
   "bugs": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer/issues",
   "author": {
     "name": "Gerald Humphries",
-    "email": "",
-    "url": ""
+    "email": "geraldhumphries@gmail.com",
+    "url": "geraldhumphries.com"
   },
   "files": [
     "generators"
   ],
   "main": "generators/app/index.js",
-  "repository": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer",
-  "dependencies": {
-    "chalk": "1.0.0",
-    "generator-jhipster": ">=2.26.0",
-    "shelljs": "0.5.3",
-    "yeoman-generator": "0.21.1",
-    "yosay": "1.0.2"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer.git"
   },
-  "license": "Apache-2.0"
+  "dependencies": {
+    "yeoman-generator": "0.22.4",
+    "chalk": "1.1.1",
+    "mkdirp": "0.5.1",
+    "generator-jhipster": ">2.26.0",
+    "shelljs": "0.5.3"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-bump": "1.0.0",
+    "gulp-eslint": "1.0.0",
+    "gulp-exclude-gitignore": "1.0.0",
+    "gulp-git": "1.6.1",
+    "gulp-istanbul": "0.10.3",
+    "gulp-mocha": "2.2.0",
+    "gulp-nsp": "2.3.0",
+    "gulp-plumber": "1.0.1",
+    "gulp-rename": "^1.2.0",
+    "gulp-sequence": "0.4.4",
+    "gulp-shell": "^0.5.1",
+    "yeoman-assert": "2.1.1"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer/issues"
+  }
 }
