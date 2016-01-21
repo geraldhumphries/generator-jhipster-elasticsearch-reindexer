@@ -6,11 +6,15 @@
 
 This is a [JHipster](http://jhipster.github.io/) module, that is meant to be used in a JHipster application.
 
+This module will generate a service using your JHipster entities that allows you to delete and rewrite all rows from your Elasticsearch index using rows from your main datastore. This is useful if any changes have been made to the main database outside of the application, like inserting rows using liquibase or migrating data from another database. 
+
 # Prerequisites
 
 As this is a [JHipster](http://jhipster.github.io/) module, we expect you have JHipster and its related tools already installed:
 
 - [Installing JHipster](https://jhipster.github.io/installation.html)
+
+You also need to have created entities using JHipster.
 
 # Installation
 
@@ -27,9 +31,21 @@ npm update -g generator-jhipster-elasticsearch-reindexer
 
 # Usage
 
+```bash
+yo jhipster-elasticsearch-reindexer
+```
+
+This will write all JHipster entities to a service that can be called through your API. This needs to be run any time you add or remove an entity to your project.
+
+To call the service, you need to send a POST request to `api/elasticsearch/index`. Ex:
+
+```bash
+curl -X POST --header "Content-Type: application/json" --header "Accept: text/plain" --header "X-CSRF-TOKEN: 00000000-0000-0000-0000-000000000000" "http://localhost:8080/api/elasticsearch/index"
+```
+
 # License
 
-Apache-2.0 © [Gerald Humphries]
+Apache-2.0 © [Gerald Humphries](mailto:geraldhumphries@gmail.com)
 
 [npm-image]: https://img.shields.io/npm/v/generator-jhipster-elasticsearch-reindexer.svg
 [npm-url]: https://npmjs.org/package/generator-jhipster-elasticsearch-reindexer
