@@ -57,6 +57,8 @@ public class ElasticsearchIndexService {
     private <T extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, Long> jpaRepository,
                                                           ElasticsearchRepository<T, Long> elasticsearchRepository) {
         elasticsearchTemplate.deleteIndex(entityClass);
+        elasticsearchTemplate.createIndex(entityClass);
+        elasticsearchTemplate.putMapping(entityClass);
         if (jpaRepository.count() > 0) {
             elasticsearchRepository.save(jpaRepository.findAll());
         }
