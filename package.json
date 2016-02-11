@@ -1,13 +1,12 @@
 {
   "name": "generator-jhipster-elasticsearch-reindexer",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Generate a service for reindexing all database rows for each of your entities",
   "keywords": [
     "yeoman-generator",
     "jhipster-module"
   ],
   "homepage": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer",
-  "bugs": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer/issues",
   "author": {
     "name": "Gerald Humphries",
     "email": "geraldhumphries@gmail.com",
@@ -45,6 +44,7 @@
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer/issues"
+    "url": "https://github.com/geraldhumphries/generator-jhipster-elasticsearch-reindexer/issues",
+    "email": "geraldhumphries@gmail.com"
   }
 }
