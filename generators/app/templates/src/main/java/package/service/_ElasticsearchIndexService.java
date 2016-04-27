@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.List;
 
 @Service
 public class ElasticsearchIndexService {
@@ -55,6 +57,7 @@ public class ElasticsearchIndexService {
     }
 
     @Transactional
+    @SuppressWarnings("unchecked")
     private <T extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, Long> jpaRepository,
                                                           ElasticsearchRepository<T, Long> elasticsearchRepository) {
         elasticsearchTemplate.deleteIndex(entityClass);
@@ -65,7 +68,12 @@ public class ElasticsearchIndexService {
         }
         elasticsearchTemplate.putMapping(entityClass);
         if (jpaRepository.count() > 0) {
-            elasticsearchRepository.save(jpaRepository.findAll());
+            try {
+                Method m = jpaRepository.getClass().getMethod("findAllWithEagerRelationships");
+                elasticsearchRepository.save((List<T>) m.invoke(jpaRepository));
+            } catch (Exception e) {
+                elasticsearchRepository.save(jpaRepository.findAll());
+            }
         }
         log.info("Elasticsearch: Indexed all rows for " + entityClass.getSimpleName());
     }
