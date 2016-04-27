@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import <%=packageName%>.domain.*;
 import <%=packageName%>.repository.*;
 import <%=packageName%>.repository.search.*;
+import org.elasticsearch.indices.IndexAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -57,7 +58,11 @@ public class ElasticsearchIndexService {
     private <T extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, Long> jpaRepository,
                                                           ElasticsearchRepository<T, Long> elasticsearchRepository) {
         elasticsearchTemplate.deleteIndex(entityClass);
-        elasticsearchTemplate.createIndex(entityClass);
+        try {
+            elasticsearchTemplate.createIndex(entityClass);
+        } catch (IndexAlreadyExistsException e) {
+            // Do nothing. Index was already concurrently recreated by some other service.
+        }
         elasticsearchTemplate.putMapping(entityClass);
         if (jpaRepository.count() > 0) {
             elasticsearchRepository.save(jpaRepository.findAll());
