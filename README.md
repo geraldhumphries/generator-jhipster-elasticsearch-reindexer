@@ -33,7 +33,7 @@ npm update -g generator-jhipster-elasticsearch-reindexer
 
 # Usage
 
-For **monolithic** applications, or applications from before microservices were introduced, you only need to follow the instructions below once.
+For **monolithic** applications or applications from before microservices were introduced, you only need to follow the instructions below once.
 
 For **microservices and gateways**, you need to follow the directions below for each of your services and gateways. When generating the service for gateways, only reindexing for the `User` entity will be generated. For microservices, reindexing for every entity except the `User` entity will be generated.
 
