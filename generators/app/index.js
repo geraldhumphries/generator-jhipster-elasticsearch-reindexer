@@ -22,6 +22,14 @@ module.exports = yeoman.Base.extend({
         }
       });
     },
+    setUpVars: function () {
+      var config = this._getConfig();
+      this.applicationType = config.applicationType;
+      this.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
+        return file.match(/\.json$/);
+      });
+      this.packageName = jhipsterVar.packageName;
+    },
     displayLogo: function () {
       // Have Yeoman greet the user.
       this.log('Welcome to the ' + chalk.red('JHipster elasticsearch-reindexer') + ' generator! ' + chalk.yellow('v' + packagejs.version + '\n'));
@@ -42,13 +50,6 @@ module.exports = yeoman.Base.extend({
 
   prompting: function () {
     var done = this.async();
-
-    var config = this._getConfig();
-    jhipsterVar.applicationType = config.applicationType;
-    jhipsterVar.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
-      return file.match(/\.json$/);
-    });
-
     var prompts = [];
 
     this.prompt(prompts, function (props) {
@@ -61,13 +62,7 @@ module.exports = yeoman.Base.extend({
 
   writing: {
     writeTemplates : function () {
-      this.packageName = jhipsterVar.packageName;
-      this.applicationType = jhipsterVar.applicationType;
       var javaDir = jhipsterVar.javaDir;
-
-      this.message = this.props.message;
-
-      this.entityFiles = jhipsterVar.entityFiles;
 
       this.template('src/main/java/package/web/rest/_ElasticsearchIndexResource.java', javaDir + 'web/rest/ElasticsearchIndexResource.java', this, {});
       this.template('src/main/java/package/service/_ElasticsearchIndexService.java', javaDir + 'service/ElasticsearchIndexService.java', this, {});
