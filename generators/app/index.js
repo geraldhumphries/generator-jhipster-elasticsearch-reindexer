@@ -29,6 +29,7 @@ module.exports = yeoman.Base.extend({
     setUpVars: function () {
       var config = this._getConfig();
       this.applicationType = config.applicationType;
+      this.searchEngine = config.searchEngine;
       this.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
         return file.match(/\.json$/);
       });
@@ -41,6 +42,9 @@ module.exports = yeoman.Base.extend({
       }
       if (!this.entityFiles || !this.entityFiles.length) {
         this.log(chalk.yellow('WARNING no entities found'));
+      }
+      if (this.searchEngine !== 'elasticsearch') {
+        this.log(chalk.yellow('WARNING Search engine is not set to Elasticsearch, generated service may fail to compile'));
       }
     }
   },
