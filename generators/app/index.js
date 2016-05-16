@@ -39,6 +39,9 @@ module.exports = yeoman.Base.extend({
         this.log(chalk.yellow('WARNING applicationType is missing in JHipster configuration, using monolithic as fallback'));
         this.applicationType = 'monolithic';
       }
+      if (!this.entityFiles || !this.entityFiles.length) {
+        this.log(chalk.yellow('WARNING no entities found'));
+      }
     }
   },
   _getConfig: function () {
