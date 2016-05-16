@@ -66,7 +66,7 @@ public class ElasticsearchIndexService {
 
     @Transactional
     @SuppressWarnings("unchecked")
-    private <T extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, Long> jpaRepository,
+    private <T> void reindexForClass(Class<T> entityClass, JpaRepository<T, Long> jpaRepository,
                                                           ElasticsearchRepository<T, Long> elasticsearchRepository) {
         elasticsearchTemplate.deleteIndex(entityClass);
         try {
