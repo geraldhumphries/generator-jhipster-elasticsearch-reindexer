@@ -37,14 +37,16 @@ module.exports = yeoman.Base.extend({
     },
     validateVars: function () {
       if (!this.applicationType) {
-        this.log(chalk.yellow('WARNING applicationType is missing in JHipster configuration, using monolithic as fallback'));
+        this.log(chalk.yellow('WARNING applicationType is missing in JHipster configuration, ' +
+            'using monolithic as fallback'));
         this.applicationType = 'monolithic';
       }
       if (!this.entityFiles || !this.entityFiles.length) {
         this.log(chalk.yellow('WARNING no entities found'));
       }
       if (this.searchEngine !== 'elasticsearch') {
-        this.log(chalk.yellow('WARNING Search engine is not set to Elasticsearch, generated service may fail to compile'));
+        this.log(chalk.yellow('WARNING search engine is not set to Elasticsearch in JHipster configuration, ' +
+            'generated service may fail to compile'));
       }
     }
   },
