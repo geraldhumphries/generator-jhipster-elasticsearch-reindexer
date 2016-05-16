@@ -33,7 +33,7 @@ npm update -g generator-jhipster-elasticsearch-reindexer
 
 # Usage
 
-For **monolithic** applications, or applications using JHipster before microservices were introduced, you only need to follow the instructions below once.
+For **monolithic** applications, or applications from before microservices were introduced, you only need to follow the instructions below once.
 
 For **microservices and gateways**, you need to follow the directions below for each of your services and gateways. When generating the service for gateways, only reindexing for the `User` entity will be generated. For microservices, reindexing for every entity except the `User` entity will be generated.
 
@@ -43,7 +43,7 @@ yo jhipster-elasticsearch-reindexer
 
 This will write all JHipster entities to a service that can be called through your API. This needs to be run any time you add or remove an entity to your project.
 
-If you are using JHipster version **2.27.0** and above, a post-entity generation hook will be set that will automatically rerun `jhipster-elasticsearch-reindexer`. For JHipster **2.26.2** and below, `jhipster-elasticsearch-reindexer` needs to be rerun manually.
+If you are using **JHipster 2.27.0** and above, a post-entity generation hook will be set that will automatically rerun `jhipster-elasticsearch-reindexer`. For **JHipster 2.26.2** and below, `jhipster-elasticsearch-reindexer` needs to be rerun manually.
 
 To call the generated service, you need to send a POST request to `api/elasticsearch/index`. Example:
 
