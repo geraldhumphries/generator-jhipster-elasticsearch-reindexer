@@ -38,8 +38,8 @@ module.exports = yeoman.Base.extend({
     validateVars: function () {
       if (!this.applicationType) {
         this.log(chalk.yellow('WARNING applicationType is missing in JHipster configuration, ' +
-            'using monolithic as fallback'));
-        this.applicationType = 'monolithic';
+            'using monolith as fallback'));
+        this.applicationType = 'monolith';
       }
       if (!this.entityFiles || !this.entityFiles.length) {
         this.log(chalk.yellow('WARNING no entities found'));
