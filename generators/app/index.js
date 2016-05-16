@@ -22,6 +22,10 @@ module.exports = yeoman.Base.extend({
         }
       });
     },
+    displayLogo: function () {
+      // Have Yeoman greet the user.
+      this.log('Welcome to the ' + chalk.red('JHipster elasticsearch-reindexer') + ' generator! ' + chalk.yellow('v' + packagejs.version + '\n'));
+    },
     setUpVars: function () {
       var config = this._getConfig();
       this.applicationType = config.applicationType;
@@ -30,9 +34,11 @@ module.exports = yeoman.Base.extend({
       });
       this.packageName = jhipsterVar.packageName;
     },
-    displayLogo: function () {
-      // Have Yeoman greet the user.
-      this.log('Welcome to the ' + chalk.red('JHipster elasticsearch-reindexer') + ' generator! ' + chalk.yellow('v' + packagejs.version + '\n'));
+    validateVars: function () {
+      if (!this.applicationType) {
+        this.log(chalk.yellow('WARNING applicationType is missing in JHipster configuration, using monolithic as fallback'));
+        this.applicationType = 'monolithic';
+      }
     }
   },
   _getConfig: function () {

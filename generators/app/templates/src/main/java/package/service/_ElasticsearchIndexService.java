@@ -24,7 +24,7 @@ public class ElasticsearchIndexService {
 
     private final Logger log = LoggerFactory.getLogger(ElasticsearchIndexService.class);
 
-    <%_ if (!applicationType || applicationType === 'monolithic' || applicationType === 'microservice') {
+    <%_ if (applicationType === 'monolithic' || applicationType === 'microservice') {
             entityFiles.forEach(function (file) {
                 var entity = file.split('.json')[0];
                 var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
@@ -36,7 +36,7 @@ public class ElasticsearchIndexService {
 
     <%_     });
         }
-        if (!applicationType || applicationType === 'monolithic' || applicationType === 'gateway') { _%>
+        if (applicationType === 'monolithic' || applicationType === 'gateway') { _%>
     @Inject
     private UserRepository userRepository;
 
