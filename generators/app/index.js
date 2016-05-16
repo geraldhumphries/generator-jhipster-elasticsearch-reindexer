@@ -50,6 +50,7 @@ module.exports = yeoman.Base.extend({
       }
     }
   },
+
   _getConfig: function () {
     var fromPath = '.yo-rc.json';
 
@@ -61,18 +62,6 @@ module.exports = yeoman.Base.extend({
     } else {
       return false;
     }
-  },
-
-  prompting: function () {
-    var done = this.async();
-    var prompts = [];
-
-    this.prompt(prompts, function (props) {
-      this.props = props;
-      // To access props later use this.props.someOption;
-
-      done();
-    }.bind(this));
   },
 
   writing: {
