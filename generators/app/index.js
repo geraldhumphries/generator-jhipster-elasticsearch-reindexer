@@ -3,6 +3,7 @@ var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var packagejs = require(__dirname + '/../../package.json');
 var shelljs = require('shelljs');
+var fs = require('fs');
 
 // Stores JHipster variables
 var jhipsterVar = {moduleName: 'elasticsearch-reindexer'};
@@ -12,7 +13,6 @@ jhipsterVar.jhipsterConfigDirectory = '.jhipster';
 var jhipsterFunc = {};
 
 module.exports = yeoman.Base.extend({
-
   initializing: {
     compose: function (args) {
       this.composeWith('jhipster:modules', {
@@ -27,15 +27,24 @@ module.exports = yeoman.Base.extend({
       this.log('Welcome to the ' + chalk.red('JHipster elasticsearch-reindexer') + ' generator! ' + chalk.yellow('v' + packagejs.version + '\n'));
     }
   },
+  _getConfig: function () {
+    var fromPath = '.yo-rc.json';
+
+    if (shelljs.test('-f', fromPath)) {
+      var fileData = this.fs.readJSON(fromPath);
+      if (fileData && fileData['generator-jhipster']) {
+        return fileData['generator-jhipster'];
+      } else return false;
+    } else {
+      return false;
+    }
+  },
 
   prompting: function () {
     var done = this.async();
 
-/*    if (jhipsterVar.searchEngine !== 'elasticsearch') {
-      this.log(chalk.red('Error!') + ' The JHipster Elasticsearch Indexer module only works with Elasticsearch');
-      process.exit(1);
-    }*/
-
+    var config = this._getConfig();
+    jhipsterVar.applicationType = config.applicationType;
     jhipsterVar.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
       return file.match(/\.json$/);
     });
@@ -52,12 +61,9 @@ module.exports = yeoman.Base.extend({
 
   writing: {
     writeTemplates : function () {
-      this.baseName = jhipsterVar.baseName;
       this.packageName = jhipsterVar.packageName;
-      this.angularAppName = jhipsterVar.angularAppName;
+      this.applicationType = jhipsterVar.applicationType;
       var javaDir = jhipsterVar.javaDir;
-      var resourceDir = jhipsterVar.resourceDir;
-      var webappDir = jhipsterVar.webappDir;
 
       this.message = this.props.message;
 

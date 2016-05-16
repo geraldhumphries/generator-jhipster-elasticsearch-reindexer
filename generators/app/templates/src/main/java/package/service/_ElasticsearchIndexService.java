@@ -24,34 +24,42 @@ public class ElasticsearchIndexService {
 
     private final Logger log = LoggerFactory.getLogger(ElasticsearchIndexService.class);
 
-    <%_ entityFiles.forEach(function (file) {
-        var entity = file.split('.json')[0];
-        var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
+    <%_ if (!applicationType || applicationType === 'monolithic' || applicationType === 'microservice') {
+            entityFiles.forEach(function (file) {
+                var entity = file.split('.json')[0];
+                var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
     @Inject
     private <%=entity%>Repository <%=entityLowerCase%>Repository;
 
     @Inject
     private <%=entity%>SearchRepository <%=entityLowerCase%>SearchRepository;
 
-    <%_ }); _%>
+    <%_     });
+        }
+        if (!applicationType || applicationType === 'monolithic' || applicationType === 'gateway') { _%>
     @Inject
     private UserRepository userRepository;
 
     @Inject
     private UserSearchRepository userSearchRepository;
 
+    <%_ } _%>
     @Inject
     private ElasticsearchTemplate elasticsearchTemplate;
 
     @Async
     @Timed
     public void reindexAll() {
-        <%_ entityFiles.forEach(function (file) {
-            var entity = file.split('.json')[0];
-            var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
+        <%_ if (!applicationType || applicationType === 'monolithic' || applicationType === 'microservice') {
+                entityFiles.forEach(function (file) {
+                    var entity = file.split('.json')[0];
+                    var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
         reindexForClass(<%=entity%>.class, <%=entityLowerCase%>Repository, <%=entityLowerCase%>SearchRepository);
-        <%_ }); _%>
+        <%_     });
+            }
+            if (!applicationType || applicationType === 'monolithic' || applicationType === 'gateway') { _%>
         reindexForClass(User.class, userRepository, userSearchRepository);
+        <%_ } _%>
 
         log.info("Elasticsearch: Successfully performed reindexing");
     }
