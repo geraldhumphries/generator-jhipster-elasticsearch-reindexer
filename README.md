@@ -45,11 +45,13 @@ This will write all JHipster entities to a service that can be called through yo
 
 If you are using **JHipster 2.27.0** and above, a post-entity generation hook will be set that will automatically rerun `jhipster-elasticsearch-reindexer`. For **JHipster 2.26.2** and below, `jhipster-elasticsearch-reindexer` needs to be rerun manually.
 
-To call the generated service, you need to send a POST request to `api/elasticsearch/index`. Example:
+To call the generated service, you need to send a POST request to `api/elasticsearch/index`. The request requires valid authentication details for an admin user. Here is an example using the default HTTP session authentication mechanism:
 
 ```bash
-curl -X POST --header "Content-Type: application/json" --header "Accept: text/plain" --header "X-CSRF-TOKEN: 00000000-0000-0000-0000-000000000000" "http://localhost:8080/api/elasticsearch/index"
+curl -X POST --header "X-CSRF-TOKEN: 00000000-0000-0000-0000-000000000000" --cookie "JSESSIONID=00000000000000000000000000000000;" "http://localhost:8080/api/elasticsearch/index"
 ```
+
+This request can also be sent through Swagger. There is a feature planned to add an admin menu link.
 
 # License
 
