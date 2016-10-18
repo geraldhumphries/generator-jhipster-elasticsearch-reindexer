@@ -29,6 +29,7 @@ module.exports = yeoman.Base.extend({
     setUpVars: function () {
       var config = this._getConfig();
       this.applicationType = config.applicationType;
+      this.nativeLanguage = config.nativeLanguage;
       this.searchEngine = config.searchEngine;
       this.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
         return file.match(/\.json$/);
@@ -47,6 +48,10 @@ module.exports = yeoman.Base.extend({
       if (this.searchEngine !== 'elasticsearch') {
         this.log(chalk.yellow('WARNING search engine is not set to Elasticsearch in JHipster configuration, ' +
             'generated service may fail to compile'));
+      }
+      if (!this.nativeLanguage) {
+        this.log(chalk.yellow('WARNING no nativeLanguage set, defaulting to english'));
+        this.nativeLanguage = 'en';
       }
     }
   },
@@ -70,6 +75,7 @@ module.exports = yeoman.Base.extend({
 
       this.template('src/main/java/package/web/rest/_ElasticsearchIndexResource.java', javaDir + 'web/rest/ElasticsearchIndexResource.java', this, {});
       this.template('src/main/java/package/service/_ElasticsearchIndexService.java', javaDir + 'service/ElasticsearchIndexService.java', this, {});
+      this.template('src/webapp/i18n/elasticsearch-reindex.json', jhipsterVar.webappDir + 'i18n/' + this.nativeLanguage + '/elasticsearch-reindex.json', this, {});
     },
 
     registering: function () {

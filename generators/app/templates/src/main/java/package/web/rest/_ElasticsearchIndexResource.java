@@ -4,9 +4,9 @@ import com.codahale.metrics.annotation.Timed;
 import <%=packageName%>.security.AuthoritiesConstants;
 import <%=packageName%>.security.SecurityUtils;
 import <%=packageName%>.service.ElasticsearchIndexService;
+import <%=packageName%>.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,9 +37,11 @@ public class ElasticsearchIndexResource {
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
     @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
-    public ResponseEntity<String> reindexAll() throws URISyntaxException {
+    public ResponseEntity<Void> reindexAll() throws URISyntaxException {
         log.info("REST request to reindex Elasticsearch by user : {}", SecurityUtils.getCurrentUserLogin());
         elasticsearchIndexService.reindexAll();
-        return new ResponseEntity<>("Request accepted, performing full Elasticsearch reindexing.", HttpStatus.ACCEPTED);
+        return ResponseEntity.accepted()
+            .headers(HeaderUtil.createAlert("elasticsearch.reindex.accepted", null))
+            .build();
     }
 }
