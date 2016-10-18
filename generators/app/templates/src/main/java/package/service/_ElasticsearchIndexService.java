@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -64,7 +63,7 @@ public class ElasticsearchIndexService {
         log.info("Elasticsearch: Successfully performed reindexing");
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     private <T> void reindexForClass(Class<T> entityClass, JpaRepository<T, Long> jpaRepository,
                                                           ElasticsearchRepository<T, Long> elasticsearchRepository) {
