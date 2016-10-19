@@ -108,7 +108,6 @@ module.exports = yeoman.Base.extend({
       }
 
       if (jhipsterFunc.addElementToAdminMenu) {
-        this.log(this.enableTranslation);
         jhipsterFunc.addElementToAdminMenu('elasticsearch-reindex', 'exclamation-sign', this.enableTranslation);
         if (this.enableTranslation) {
           jhipsterFunc.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', this.nativeLanguage);
