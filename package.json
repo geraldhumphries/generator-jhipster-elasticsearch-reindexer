@@ -1,6 +1,6 @@
 {
   "name": "generator-jhipster-elasticsearch-reindexer",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Generate a service for reindexing all database rows for each of your entities",
   "keywords": [
     "yeoman-generator",
