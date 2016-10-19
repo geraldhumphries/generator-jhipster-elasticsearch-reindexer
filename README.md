@@ -16,7 +16,7 @@ This is a [JHipster](http://jhipster.github.io/) module, so you will need to hav
 
 - [Installing JHipster](https://jhipster.github.io/installation.html)
 
-The generator will run if you haven't created any entities, but omly the User entity will be added to the generated service. When creating a new project, it is recommended that you run this generator immediately and allow the post-entity generation hook rerun it automatically as you build your application.
+The generator will run if you haven't created any entities, but only the User entity will be added to the generated service. When creating a new project, it is recommended that you run this generator immediately and allow the post-entity generation hook rerun it automatically as you build your application.
 
 # Installation
 
