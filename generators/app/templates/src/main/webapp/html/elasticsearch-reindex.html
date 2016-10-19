@@ -1,0 +1,18 @@
+<div class="clearfix">
+    <h1<% if (enableTranslation) { %> data-translate="elasticsearch.reindex.title"<% } %>>Reindex Elasticsearch</h1>
+    <jh<% if (!versionTwo) { %>i<% } %>-alert></jh<% if (!versionTwo) { %>i<% } %>-alert>
+    <p<% if (enableTranslation) { %> data-translate="elasticsearch.reindex.instructions1"<% } %>>
+        This will send a request to reindex all data from your primary datasource into Elasticsearch. This will fix
+        missing data and mapping issues, however you will lose any ES data and mapping that was defined outside of your
+        application. This request will return immediately and the reindexing will run in the background. You will see
+        "Elasticsearch: Successfully performed reindexing" in your logs when this is complete.</p>
+    <p<% if (enableTranslation) { %> data-translate="elasticsearch.reindex.instructions2"<% } %>>
+        This can take a long time and is susceptible to concurrency issues so it should be performed when the number of
+        users is low.</p>
+    <button type="button" class="btn btn-primary pull-right" ui-sref="elasticsearch-reindex.dialog">
+        <span class="glyphicon glyphicon-exclamation-sign"></span>
+        <span<% if (enableTranslation) { %> data-translate="elasticsearch.reindex.go"<% } %>>
+            Go
+        </span>
+    </button>
+</div>
