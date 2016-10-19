@@ -16,7 +16,7 @@ This is a [JHipster](http://jhipster.github.io/) module, so you will need to hav
 
 - [Installing JHipster](https://jhipster.github.io/installation.html)
 
-You also need to have created entities using JHipster. The generator will run if you haven't created any entities, but no entities will be added to the generated service. When creating a new project, I recommend running this generator immediately and allowing the post-entity generation hook to run it automatically.
+The generator will run if you haven't created any entities, but omly the User entity will be added to the generated service. When creating a new project, it is recommended that you run this generator immediately and allow the post-entity generation hook rerun it automatically as you build your application.
 
 # Installation
 
@@ -47,7 +47,7 @@ If you are using **JHipster 2.27.0** and above, a post-entity generation hook wi
 
 A new admin menu link will be added that will allow you to call the service. You will need to be logged in as an admin user to see it.
 
-If you don't see the link, that probably means you are using an older version of JHipster that does have support for adding admin menu links. You will need to manually add the link:
+If you don't see the link, that probably means you are using an older version of JHipster that does not have support for adding admin menu links from modules. You will need to manually add the link:
 
 ```html
 <li ui-sref-active="active">
@@ -58,7 +58,7 @@ If you don't see the link, that probably means you are using an older version of
 </li>
 ```
 
-Alternatively, you can call the API directly with a POST request to `api/elasticsearch/index`. The request requires valid authentication details for an admin user. Here is an example using the default HTTP session authentication mechanism:
+Alternatively, you can call the API directly by sending a POST request to `api/elasticsearch/index`. The request requires valid authentication details for an admin user. Here is an example using the default HTTP session authentication mechanism:
 
 ```bash
 curl -X POST --header "X-CSRF-TOKEN: 00000000-0000-0000-0000-000000000000" --cookie "JSESSIONID=00000000000000000000000000000000;" "http://localhost:8080/api/elasticsearch/index"
