@@ -18,10 +18,9 @@
         }
 
         function confirmReindex() {
-            ElasticsearchReindex.reindex(
-                function () {
-                    $uibModalInstance.close(true);
-                });
+            ElasticsearchReindex.reindex(function () {
+                $uibModalInstance.close(true);
+            });
         }
     }
 })();
