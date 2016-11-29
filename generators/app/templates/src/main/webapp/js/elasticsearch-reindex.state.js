@@ -17,7 +17,7 @@
             },
             views: {
                 'content@': {
-                    templateUrl: '<%=appFolder%>/elasticsearch-reindex.html',
+                    templateUrl: '<%=appFolder%>elasticsearch-reindex.html',
                     controller: 'ElasticsearchReindexController',
                     controllerAs: 'vm'
                 }
@@ -36,7 +36,7 @@
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function ($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: '<%=appFolder%>/elasticsearch-reindex-dialog.html',
+                    templateUrl: '<%=appFolder%>elasticsearch-reindex-dialog.html',
                     controller: 'ElasticsearchReindexDialogController',
                     controllerAs: 'vm',
                     size: 'sm'
