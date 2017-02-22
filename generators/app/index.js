@@ -48,6 +48,7 @@ module.exports = yeoman.Base.extend({
       this.nativeLanguage = config.nativeLanguage;
       this.searchEngine = config.searchEngine;
       this.enableTranslation = config.enableTranslation;
+      this.clientFramework = config.clientFramework;
       this.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
         return file.match(/\.json$/);
       });
@@ -78,39 +79,45 @@ module.exports = yeoman.Base.extend({
         this.log(chalk.yellow('WARNING nativeLanguage is missing in JHipster configuration, using english as fallback'));
         this.nativeLanguage = 'en';
       }
+      if (!this.clientFramework) {
+        this.log(chalk.yellow('WARNING clientFramework is missing in JHipster configuration, using angular1 as fallback'));
+        this.clientFramework = 'angular1';
+      }
     },
     writeTemplates: function () {
       this.template('src/main/java/package/web/rest/_ElasticsearchIndexResource.java', jhipsterVar.javaDir + 'web/rest/ElasticsearchIndexResource.java', this, {});
       this.template('src/main/java/package/service/_ElasticsearchIndexService.java', jhipsterVar.javaDir + 'service/ElasticsearchIndexService.java', this, {});
-      this.template('src/main/webapp/js/elasticsearch-reindex.controller.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.controller.js', this, {});
-      this.template('src/main/webapp/js/elasticsearch-reindex-dialog.controller.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-dialog.controller.js', this, {});
-      this.template('src/main/webapp/i18n/elasticsearch-reindex.json', jhipsterVar.webappDir + 'i18n/' + this.nativeLanguage + '/elasticsearch-reindex.json', this, {});
-      this.template('src/main/webapp/js/elasticsearch-reindex.service.js', jhipsterVar.webappDir + this.serviceFolder + '/elasticsearch-reindex.service.js', this, {});
-      this.template('src/main/webapp/html/elasticsearch-reindex.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.html', this, {});
-      this.template('src/main/webapp/html/elasticsearch-reindex-dialog.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-dialog.html', this, {});
+      if (this.clientFramework === 'angular1') {
+        this.template('src/main/webapp/js/elasticsearch-reindex.controller.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.controller.js', this, {});
+        this.template('src/main/webapp/js/elasticsearch-reindex-dialog.controller.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-dialog.controller.js', this, {});
+        this.template('src/main/webapp/i18n/elasticsearch-reindex.json', jhipsterVar.webappDir + 'i18n/' + this.nativeLanguage + '/elasticsearch-reindex.json', this, {});
+        this.template('src/main/webapp/js/elasticsearch-reindex.service.js', jhipsterVar.webappDir + this.serviceFolder + '/elasticsearch-reindex.service.js', this, {});
+        this.template('src/main/webapp/html/elasticsearch-reindex.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.html', this, {});
+        this.template('src/main/webapp/html/elasticsearch-reindex-dialog.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-dialog.html', this, {});
 
-      if (!this.versionTwo) {
-        this.template('src/main/webapp/js/elasticsearch-reindex.state.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.state.js', this, {});
-      } else {
-        this.template('src/main/webapp/js/elasticsearch-reindex.state.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.js', this, {});
-      }
-
-      if (jhipsterFunc.addJavaScriptToIndex) {
-        jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.controller.js');
-        jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.controller.js');
         if (!this.versionTwo) {
-          jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.state.js');
-          jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex.service.js');
+          this.template('src/main/webapp/js/elasticsearch-reindex.state.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.state.js', this, {});
         } else {
-          jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.js');
-          jhipsterFunc.addJavaScriptToIndex('components/admin/elasticsearch-reindex.service.js');
+          this.template('src/main/webapp/js/elasticsearch-reindex.state.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.js', this, {});
         }
-      }
 
-      if (jhipsterFunc.addElementToAdminMenu) {
-        jhipsterFunc.addElementToAdminMenu('elasticsearch-reindex', 'exclamation-sign', this.enableTranslation);
-        if (this.enableTranslation) {
-          jhipsterFunc.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', this.nativeLanguage);
+        if (jhipsterFunc.addJavaScriptToIndex) {
+          jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.controller.js');
+          jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.controller.js');
+          if (!this.versionTwo) {
+            jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.state.js');
+            jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex.service.js');
+          } else {
+            jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.js');
+            jhipsterFunc.addJavaScriptToIndex('components/admin/elasticsearch-reindex.service.js');
+          }
+        }
+
+        if (jhipsterFunc.addElementToAdminMenu) {
+          jhipsterFunc.addElementToAdminMenu('elasticsearch-reindex', 'exclamation-sign', this.enableTranslation);
+          if (this.enableTranslation) {
+            jhipsterFunc.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', this.nativeLanguage);
+          }
         }
       }
     },

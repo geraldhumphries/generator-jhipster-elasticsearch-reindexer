@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
 import java.net.URISyntaxException;
 
 /**
@@ -25,10 +24,12 @@ import java.net.URISyntaxException;
 public class ElasticsearchIndexResource {
 
     private final Logger log = LoggerFactory.getLogger(ElasticsearchIndexResource.class);
+    
+    private final ElasticsearchIndexService elasticsearchIndexService;
 
-    @Inject
-    private ElasticsearchIndexService elasticsearchIndexService;
-
+    public ElasticsearchIndexResource (ElasticsearchIndexService elasticsearchIndexService) {
+        this.elasticsearchIndexService =  elasticsearchIndexService;
+    }
     /**
      * POST  /elasticsearch/index -> Reindex all Elasticsearch documents
      */

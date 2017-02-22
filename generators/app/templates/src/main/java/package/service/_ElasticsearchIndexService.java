@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -27,24 +26,47 @@ public class ElasticsearchIndexService {
             entityFiles.forEach(function (file) {
                 var entity = file.split('.json')[0];
                 var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
-    @Inject
-    private <%=entity%>Repository <%=entityLowerCase%>Repository;
+    private final <%=entity%>Repository <%=entityLowerCase%>Repository;
 
-    @Inject
-    private <%=entity%>SearchRepository <%=entityLowerCase%>SearchRepository;
+    private final <%=entity%>SearchRepository <%=entityLowerCase%>SearchRepository;
 
     <%_     });
         }
         if (applicationType === 'monolith' || applicationType === 'gateway') { _%>
-    @Inject
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Inject
-    private UserSearchRepository userSearchRepository;
+    private final UserSearchRepository userSearchRepository;
 
     <%_ } _%>
-    @Inject
-    private ElasticsearchTemplate elasticsearchTemplate;
+    private final ElasticsearchTemplate elasticsearchTemplate;
+
+    public ElasticsearchIndexService (<%_ if (applicationType === 'monolith' || applicationType === 'gateway') { _%>
+        UserRepository userRepository,
+        UserSearchRepository userSearchRepository,
+        <%_ } _%>
+        <%_ if (applicationType === 'monolith' || applicationType === 'microservice') {
+            entityFiles.forEach(function (file) {
+                var entity = file.split('.json')[0];
+                var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
+        <%=entity%>Repository <%=entityLowerCase%>Repository,
+        <%=entity%>SearchRepository <%=entityLowerCase%>SearchRepository,
+        <%_     
+            });
+        } _%>
+        ElasticsearchTemplate elasticsearchTemplate) {
+        this.userRepository = userRepository;
+        this.userSearchRepository = userSearchRepository;
+        <%_ if (applicationType === 'monolith' || applicationType === 'microservice') {
+            entityFiles.forEach(function (file) {
+                var entity = file.split('.json')[0];
+                var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
+        this.<%=entityLowerCase%>Repository = <%=entityLowerCase%>Repository;
+        this.<%=entityLowerCase%>SearchRepository = <%=entityLowerCase%>SearchRepository;
+        <%_     
+            });
+        } _%>
+        this.elasticsearchTemplate = elasticsearchTemplate;
+    }
 
     @Async
     @Timed
