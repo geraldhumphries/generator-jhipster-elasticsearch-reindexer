@@ -49,13 +49,19 @@ module.exports = yeoman.Base.extend({
       this.searchEngine = config.searchEngine;
       this.enableTranslation = config.enableTranslation;
       this.clientFramework = config.clientFramework;
+      // set the major version to 2 if it isn't specifified
+      this.jhipsterVersion = config.jhipsterVersion;
+      if (!this.jhipsterVersion) {
+        this.jhipsterMajorVersion = 2;
+      } else {
+        this.jhipsterMajorVersion = config.jhipsterVersion[0];
+      }
       this.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
         return file.match(/\.json$/);
       });
       this.packageName = jhipsterVar.packageName;
       this.angularAppName = jhipsterVar.angularAppName;
-      this.versionTwo = shelljs.test('-e', jhipsterVar.webappDir + 'scripts');
-      if (!this.versionTwo) {
+      if (this.jhipsterMajorVersion > 2) {
         this.appFolder = 'app/admin/elasticsearch-reindex/';
         this.serviceFolder = this.appFolder;
       } else {
@@ -64,6 +70,9 @@ module.exports = yeoman.Base.extend({
       }
     },
     validateVars: function () {
+      if (!this.jhipsterVersion) {
+        this.log(chalk.yellow('WARNING jhipsterVersion is missing in JHipster configuration, defaulting to v2'));
+      }
       if (!this.applicationType) {
         this.log(chalk.yellow('WARNING applicationType is missing in JHipster configuration, using monolith as fallback'));
         this.applicationType = 'monolith';
@@ -95,7 +104,7 @@ module.exports = yeoman.Base.extend({
         this.template('src/main/webapp/html/elasticsearch-reindex.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.html', this, {});
         this.template('src/main/webapp/html/elasticsearch-reindex-dialog.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-dialog.html', this, {});
 
-        if (!this.versionTwo) {
+        if (this.jhipsterMajorVersion > 2) {
           this.template('src/main/webapp/js/elasticsearch-reindex.state.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.state.js', this, {});
         } else {
           this.template('src/main/webapp/js/elasticsearch-reindex.state.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.js', this, {});
@@ -104,7 +113,7 @@ module.exports = yeoman.Base.extend({
         if (jhipsterFunc.addJavaScriptToIndex) {
           jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.controller.js');
           jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.controller.js');
-          if (!this.versionTwo) {
+          if (this.jhipsterMajorVersion > 2) {
             jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.state.js');
             jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex.service.js');
           } else {

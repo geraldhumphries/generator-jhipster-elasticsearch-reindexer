@@ -14,6 +14,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+<%_ if (jhipsterMajorVersion < 4) { _%>
+import javax.inject.Inject;
+<%_ } _%>
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -21,7 +24,7 @@ import java.util.List;
 public class ElasticsearchIndexService {
 
     private final Logger log = LoggerFactory.getLogger(ElasticsearchIndexService.class);
-
+<%_ if (jhipsterMajorVersion >= 4) { _%>
     <%_ if (applicationType === 'monolith' || applicationType === 'microservice') {
             entityFiles.forEach(function (file) {
                 var entity = file.split('.json')[0];
@@ -40,7 +43,8 @@ public class ElasticsearchIndexService {
     <%_ } _%>
     private final ElasticsearchTemplate elasticsearchTemplate;
 
-    public ElasticsearchIndexService (<%_ if (applicationType === 'monolith' || applicationType === 'gateway') { _%>
+    public ElasticsearchIndexService (
+        <%_ if (applicationType === 'monolith' || applicationType === 'gateway') { _%>
         UserRepository userRepository,
         UserSearchRepository userSearchRepository,
         <%_ } _%>
@@ -50,7 +54,7 @@ public class ElasticsearchIndexService {
                 var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
         <%=entity%>Repository <%=entityLowerCase%>Repository,
         <%=entity%>SearchRepository <%=entityLowerCase%>SearchRepository,
-        <%_     
+        <%_
             });
         } _%>
         ElasticsearchTemplate elasticsearchTemplate) {
@@ -62,11 +66,37 @@ public class ElasticsearchIndexService {
                 var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
         this.<%=entityLowerCase%>Repository = <%=entityLowerCase%>Repository;
         this.<%=entityLowerCase%>SearchRepository = <%=entityLowerCase%>SearchRepository;
-        <%_     
+        <%_
             });
         } _%>
         this.elasticsearchTemplate = elasticsearchTemplate;
     }
+<%_ } else if (jhipsterMajorVersion < 4) { _%>
+
+    <%_ if (applicationType === 'monolith' || applicationType === 'microservice') {
+            entityFiles.forEach(function (file) {
+              var entity = file.split('.json')[0];
+              var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
+    @Inject
+    private <%=entity%>Repository <%=entityLowerCase%>Repository;
+
+    @Inject
+    private <%=entity%>SearchRepository <%=entityLowerCase%>SearchRepository;
+
+    <%_     });
+    }
+    if (applicationType === 'monolith' || applicationType === 'gateway') { _%>
+    @Inject
+    private UserRepository userRepository;
+
+    @Inject
+    private UserSearchRepository userSearchRepository;
+
+    <%_ } _%>
+    @Inject
+    private ElasticsearchTemplate elasticsearchTemplate;
+
+<%_ } _%>
 
     @Async
     @Timed
