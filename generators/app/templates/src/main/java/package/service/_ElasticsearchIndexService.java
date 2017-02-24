@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 <%_ if (jhipsterMajorVersion < 4) { _%>
 import javax.inject.Inject;
 <%_ } _%>
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -117,8 +118,8 @@ public class ElasticsearchIndexService {
 
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
-    private <T> void reindexForClass(Class<T> entityClass, JpaRepository<T, Long> jpaRepository,
-                                                          ElasticsearchRepository<T, Long> elasticsearchRepository) {
+    private <T, ID extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, ID> jpaRepository,
+                                                          ElasticsearchRepository<T, ID> elasticsearchRepository) {
         elasticsearchTemplate.deleteIndex(entityClass);
         try {
             elasticsearchTemplate.createIndex(entityClass);
