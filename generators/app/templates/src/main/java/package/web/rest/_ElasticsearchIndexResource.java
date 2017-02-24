@@ -31,13 +31,14 @@ public class ElasticsearchIndexResource {
     <%_ if (jhipsterMajorVersion >= 4) { _%>
     private final ElasticsearchIndexService elasticsearchIndexService;
 
-    public ElasticsearchIndexResource (ElasticsearchIndexService elasticsearchIndexService) {
-        this.elasticsearchIndexService =  elasticsearchIndexService;
+    public ElasticsearchIndexResource(ElasticsearchIndexService elasticsearchIndexService) {
+        this.elasticsearchIndexService = elasticsearchIndexService;
     }
     <%_ } else { _%>
     @Inject
     private ElasticsearchIndexService elasticsearchIndexService;
     <%_ } _%>
+
     /**
      * POST  /elasticsearch/index -> Reindex all Elasticsearch documents
      */

@@ -25,6 +25,7 @@ import java.util.List;
 public class ElasticsearchIndexService {
 
     private final Logger log = LoggerFactory.getLogger(ElasticsearchIndexService.class);
+
 <%_ if (jhipsterMajorVersion >= 4) { _%>
     <%_ if (applicationType === 'monolith' || applicationType === 'microservice') {
             entityFiles.forEach(function (file) {
@@ -44,7 +45,7 @@ public class ElasticsearchIndexService {
     <%_ } _%>
     private final ElasticsearchTemplate elasticsearchTemplate;
 
-    public ElasticsearchIndexService (
+    public ElasticsearchIndexService(
         <%_ if (applicationType === 'monolith' || applicationType === 'gateway') { _%>
         UserRepository userRepository,
         UserSearchRepository userSearchRepository,
@@ -73,7 +74,6 @@ public class ElasticsearchIndexService {
         this.elasticsearchTemplate = elasticsearchTemplate;
     }
 <%_ } else if (jhipsterMajorVersion < 4) { _%>
-
     <%_ if (applicationType === 'monolith' || applicationType === 'microservice') {
             entityFiles.forEach(function (file) {
               var entity = file.split('.json')[0];
@@ -96,7 +96,6 @@ public class ElasticsearchIndexService {
     <%_ } _%>
     @Inject
     private ElasticsearchTemplate elasticsearchTemplate;
-
 <%_ } _%>
 
     @Async
@@ -119,7 +118,7 @@ public class ElasticsearchIndexService {
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     private <T, ID extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, ID> jpaRepository,
-                                                          ElasticsearchRepository<T, ID> elasticsearchRepository) {
+                                                              ElasticsearchRepository<T, ID> elasticsearchRepository) {
         elasticsearchTemplate.deleteIndex(entityClass);
         try {
             elasticsearchTemplate.createIndex(entityClass);
