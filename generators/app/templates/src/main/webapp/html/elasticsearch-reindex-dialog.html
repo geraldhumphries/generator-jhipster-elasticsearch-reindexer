@@ -5,7 +5,7 @@
         <h4 class="modal-title"<% if (enableTranslation) { %> data-translate="elasticsearch.reindex.dialog.title"<% } %>>Confirm reindex operation</h4>
     </div>
     <div class="modal-body">
-        <jh<% if (!versionTwo) { %>i<% } %>-alert-error></jh<% if (!versionTwo) { %>i<% } %>-alert-error>
+        <jh<% if (jhipsterMajorVersion > 2) { %>i<% } %>-alert-error></jh<% if (jhipsterMajorVersion > 2) { %>i<% } %>-alert-error>
         <p<% if (enableTranslation) { %> data-translate="elasticsearch.reindex.dialog.question"<% } %>>
             Are you sure you want to reindex Elasticsearch? This could take a while!</p>
     </div>

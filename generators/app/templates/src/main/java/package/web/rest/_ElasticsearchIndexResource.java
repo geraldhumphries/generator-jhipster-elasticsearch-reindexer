@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+<%_ if (jhipsterMajorVersion < 4) { _%>
 import javax.inject.Inject;
+<%_ } _%>
 import java.net.URISyntaxException;
 
 /**
@@ -26,9 +28,16 @@ public class ElasticsearchIndexResource {
 
     private final Logger log = LoggerFactory.getLogger(ElasticsearchIndexResource.class);
 
+    <%_ if (jhipsterMajorVersion >= 4) { _%>
+    private final ElasticsearchIndexService elasticsearchIndexService;
+
+    public ElasticsearchIndexResource (ElasticsearchIndexService elasticsearchIndexService) {
+        this.elasticsearchIndexService =  elasticsearchIndexService;
+    }
+    <%_ } else { _%>
     @Inject
     private ElasticsearchIndexService elasticsearchIndexService;
-
+    <%_ } _%>
     /**
      * POST  /elasticsearch/index -> Reindex all Elasticsearch documents
      */

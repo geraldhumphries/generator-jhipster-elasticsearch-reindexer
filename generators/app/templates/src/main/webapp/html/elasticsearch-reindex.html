@@ -1,6 +1,6 @@
 <div class="clearfix">
     <h1<% if (enableTranslation) { %> data-translate="elasticsearch.reindex.title"<% } %>>Reindex Elasticsearch</h1>
-    <jh<% if (!versionTwo) { %>i<% } %>-alert></jh<% if (!versionTwo) { %>i<% } %>-alert>
+    <jh<% if (jhipsterMajorVersion > 2) { %>i<% } %>-alert></jh<% if (jhipsterMajorVersion > 2) { %>i<% } %>-alert>
     <p<% if (enableTranslation) { %> data-translate="elasticsearch.reindex.instructions1"<% } %>>
         This will send a request to reindex all data from your primary datasource into Elasticsearch. This will fix
         missing data and mapping issues, however you will lose any ES data and mapping that was defined outside of your
