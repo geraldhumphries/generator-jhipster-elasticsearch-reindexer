@@ -63,6 +63,9 @@ module.exports = yeoman.Base.extend({
       this.packageName = jhipsterVar.packageName;
       this.angularAppName = jhipsterVar.angularAppName;
       this.angular2AppName = jhipsterVar.angular2AppName;
+      if (this.angular2AppName === undefined) {
+          this.angular2AppName = jhipsterVar.baseName;
+      }
 
       if (this.jhipsterMajorVersion > 2) {
         this.appFolder = 'app/admin/elasticsearch-reindex/';
@@ -140,7 +143,13 @@ module.exports = yeoman.Base.extend({
         this.template('src/main/webapp/ts/_elasticsearch-reindex.route.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.route.ts', this, {});
         this.template('src/main/webapp/ts/_elasticsearch-reindex.service.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.service.ts', this, {});
         this.template('src/main/webapp/ts/_index.ts', jhipsterVar.webappDir + this.appFolder + '/index.ts', this, {});
-        jhipsterFunc.addAdminToModule(jhipsterVar.angular2AppName, 'ElasticsearchReindex', 'elasticsearch-reindex', 'elasticsearch-reindex', this.enableTranslation, this.clientFramework);
+        if (jhipsterFunc.addAdminToModule) {
+          jhipsterFunc.addAdminToModule(jhipsterVar.angular2AppName, 'ElasticsearchReindex', 'elasticsearch-reindex', 'elasticsearch-reindex', this.enableTranslation, this.clientFramework);
+        } else {
+          this.log(chalk.yellow('WARNING the function addAdminToModule is missing, you need to add the missing import in src/main/webapp/app/admin/admin.module.ts:'));
+          this.log(chalk.yellow('  - at the beginning of the file: ') + 'import { ' + this.angular2AppName + 'ElasticsearchReindexModule } from \'./elasticsearch-reindex/elasticsearch-reindex.module\';');
+          this.log(chalk.yellow('  - inside @NgModule, imports: ') + this.angular2AppName + 'ElasticsearchReindexModule\n');
+        }
         if (jhipsterFunc.addElementToAdminMenu) {
           jhipsterFunc.addElementToAdminMenu('elasticsearch-reindex', 'fw fa-search', this.enableTranslation, this.clientFramework);
           if (this.enableTranslation) {
