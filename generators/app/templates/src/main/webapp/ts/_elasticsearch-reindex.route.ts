@@ -7,7 +7,7 @@ export const elasticsearchReindexRoute: Route = {
     component: ElasticsearchReindexComponent,
     data: {
         authorities: ['ROLE_ADMIN'],
-        pageTitle: 'elasticsearch.reindex.title'
+        pageTitle: <% if (enableTranslation){ %>'elasticsearch.reindex.title'<% }else{ %>'Reindex Elasticsearch'<% } %>
     },
     canActivate: [UserRouteAccessService]
 };
