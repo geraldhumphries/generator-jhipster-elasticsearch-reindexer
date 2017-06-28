@@ -7,11 +7,10 @@ import <%=packageName%>.service.ElasticsearchIndexService;
 import <%=packageName%>.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 <%_ if (jhipsterMajorVersion < 4) { _%>
@@ -42,11 +41,9 @@ public class ElasticsearchIndexResource {
     /**
      * POST  /elasticsearch/index -> Reindex all Elasticsearch documents
      */
-    @RequestMapping(value = "/elasticsearch/index",
-        method = RequestMethod.POST,
-        produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping("/elasticsearch/index")
     @Timed
-    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "')")
+    @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> reindexAll() throws URISyntaxException {
         log.info("REST request to reindex Elasticsearch by user : {}", SecurityUtils.getCurrentUserLogin());
         elasticsearchIndexService.reindexAll();
