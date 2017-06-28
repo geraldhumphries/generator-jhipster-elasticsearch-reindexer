@@ -5,7 +5,9 @@ import { Observable } from 'rxjs/Rx';
 @Injectable()
 export class ElasticsearchReindexService {
 
-    constructor(private http: Http) { }
+    constructor(
+      private http: Http
+    ) { }
 
     reindex(): Observable<Response> {
         return this.http.post('api/elasticsearch/index', {});
