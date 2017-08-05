@@ -48,8 +48,8 @@ module.exports = JhipsterGenerator.extend({
       this.clientFramework = config.clientFramework;
 
       // this variable is used in templates
-      if (this.clientFramework === 'angularX') {
-        this.angular2AppName = this.getAngular2AppName();
+      if (this.clientFramework === 'angularX' || this.clientFramework === 'angular2') {
+        this.angular2AppName = this.getAngularXAppName();
       } else if (this.clientFramework === 'angular1') {
         this.angularAppName = this.getAngularAppName();
       }
@@ -125,7 +125,7 @@ module.exports = JhipsterGenerator.extend({
             this.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', this.nativeLanguage);
           }
         }
-      } else if (this.clientFramework === 'angularX') {
+      } else if (this.clientFramework === 'angularX' || this.clientFramework === 'angular2') {
         this.template('src/main/webapp/ts/_elasticsearch-reindex-modal.component.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-modal.component.html', this, {});
         this.template('src/main/webapp/ts/_elasticsearch-reindex-modal.component.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-modal.component.ts', this, {});
         this.template('src/main/webapp/ts/_elasticsearch-reindex.component.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.component.html', this, {});
