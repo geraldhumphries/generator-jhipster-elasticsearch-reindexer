@@ -51,6 +51,12 @@ module.exports = yeoman.Base.extend({
       this.searchEngine = config.searchEngine;
       this.enableTranslation = config.enableTranslation;
       this.clientFramework = config.clientFramework;
+
+      // for backwards compatability
+      if (this.clientFramework === 'angular2') {
+        this.clientFramework = 'angularX'
+      }
+
       // set the major version to 2 if it isn't specifified
       this.jhipsterVersion = config.jhipsterVersion;
       if (!this.jhipsterVersion) {
