@@ -25,6 +25,7 @@
     "chalk": "1.1.1",
     "mkdirp": "0.5.1",
     "generator-jhipster": ">2.26.0",
+    "semver": "5.4.1",
     "shelljs": "0.5.3",
     "fs-extra": "0.30.0"
   },

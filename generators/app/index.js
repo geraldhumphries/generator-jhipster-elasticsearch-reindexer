@@ -4,6 +4,7 @@ var chalk = require('chalk');
 var packagejs = require(__dirname + '/../../package.json');
 var shelljs = require('shelljs');
 var fs = require('fs');
+var semver = require('semver');
 
 // Stores JHipster variables
 var jhipsterVar = {moduleName: 'elasticsearch-reindexer'};
@@ -57,12 +58,13 @@ module.exports = yeoman.Base.extend({
       } else {
         this.jhipsterMajorVersion = config.jhipsterVersion[0];
       }
+      this.requiresSetLocation = semver.lt(this.jhipsterVersion, '4.4.4');
       this.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
         return file.match(/\.json$/);
       });
       this.packageName = jhipsterVar.packageName;
       this.angularAppName = jhipsterVar.angularAppName;
-      this.angularXAppName = jhipsterVar.angularXAppName;
+      this.angularXAppName = jhipsterVar.angularXAppName || jhipsterVar.angular2AppName;
       if (this.angularXAppName === undefined) {
           this.angularXAppName = jhipsterVar.baseName;
       }
