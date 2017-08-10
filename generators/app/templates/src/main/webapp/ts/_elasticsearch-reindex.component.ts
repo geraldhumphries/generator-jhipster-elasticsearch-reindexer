@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-<%_ if (enableTranslation) { _%>
+<%_ if (enableTranslation && requiresSetLocation) { _%>
 import { JhiLanguageService } from 'ng-jhipster';
 <%_ } _%>
 
@@ -13,11 +13,11 @@ import { ElasticsearchReindexModalComponent } from './elasticsearch-reindex-moda
 export class ElasticsearchReindexComponent {
 
     constructor(
-        <%_ if (enableTranslation) { _%>
+        <%_ if (enableTranslation && requiresSetLocation) { _%>
         private jhiLanguageService: JhiLanguageService,
         <%_ } _%>
         private modalService: NgbModal
-    )<%_ if (enableTranslation) { %> {
+    )<%_ if (enableTranslation && requiresSetLocation) { %> {
         this.jhiLanguageService.setLocations(['elasticsearch-reindex']);
     }<%_ } else { %> { }<%_ } %>
 

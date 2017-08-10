@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { <%=angular2AppName%>SharedModule } from '../../shared';
+import { <%=angularXAppName%>SharedModule } from '../../shared';
 
 import {
     ElasticsearchReindexComponent,
@@ -16,7 +16,7 @@ const ADMIN_ROUTES = [
 
 @NgModule({
     imports: [
-        <%=angular2AppName%>SharedModule,
+        <%=angularXAppName%>SharedModule,
         RouterModule.forRoot(ADMIN_ROUTES, { useHash: true })
     ],
     declarations: [
@@ -32,4 +32,4 @@ const ADMIN_ROUTES = [
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
-export class <%=angular2AppName%>ElasticsearchReindexModule {}
+export class <%=angularXAppName%>ElasticsearchReindexModule {}
