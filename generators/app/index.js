@@ -1,50 +1,32 @@
 'use strict';
-var yeoman = require('yeoman-generator');
+var util = require('util');
+var generator = require('yeoman-generator');
 var chalk = require('chalk');
 var packagejs = require(__dirname + '/../../package.json');
 var shelljs = require('shelljs');
 var fs = require('fs');
 var semver = require('semver');
+var BaseGenerator = require('generator-jhipster/generators/generator-base');
+var jhipsterConstants = require('generator-jhipster/generators/generator-constants');
+
+var JhipsterGenerator = generator.extend({});
+util.inherits(JhipsterGenerator, BaseGenerator);
 
 // Stores JHipster variables
 var jhipsterVar = {moduleName: 'elasticsearch-reindexer'};
 jhipsterVar.jhipsterConfigDirectory = '.jhipster';
 
-// Stores JHipster functions
-var jhipsterFunc = {};
-
-module.exports = yeoman.Base.extend({
+module.exports = JhipsterGenerator.extend({
   initializing: {
-    compose: function (args) {
-      this.composeWith('jhipster:modules', {
-        options: {
-          jhipsterVar: jhipsterVar,
-          jhipsterFunc: jhipsterFunc
-        }
-      });
-    },
     displayLogo: function () {
       // Have Yeoman greet the user.
       this.log('Welcome to the ' + chalk.red('JHipster elasticsearch-reindexer') + ' generator! ' + chalk.yellow('v' + packagejs.version + '\n'));
     }
   },
 
-  _getConfig: function () {
-    var fromPath = '.yo-rc.json';
-
-    if (shelljs.test('-f', fromPath)) {
-      var fileData = this.fs.readJSON(fromPath);
-      if (fileData && fileData['generator-jhipster']) {
-        return fileData['generator-jhipster'];
-      } else return false;
-    } else {
-      return false;
-    }
-  },
-
   writing: {
     setUpVars: function () {
-      var config = this._getConfig();
+      var config = this.getJhipsterAppConfig()
       this.applicationType = config.applicationType;
       this.nativeLanguage = config.nativeLanguage;
       this.languages = config.languages;
@@ -68,11 +50,16 @@ module.exports = yeoman.Base.extend({
       this.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
         return file.match(/\.json$/);
       });
-      this.packageName = jhipsterVar.packageName;
-      this.angularAppName = jhipsterVar.angularAppName;
-      this.angularXAppName = jhipsterVar.angularXAppName || jhipsterVar.angular2AppName;
-      if (this.angularXAppName === undefined) {
-          this.angularXAppName = jhipsterVar.baseName;
+      this.baseName = config.baseName;
+      this.packageName = config.packageName;
+      this.packageFolder = config.packageFolder;
+      this.clientFramework = config.clientFramework;
+
+      // this variable is used in templates
+      if (this.clientFramework === 'angularX' || this.clientFramework === 'angular2') {
+        this.angular2AppName = this.getAngularXAppName();
+      } else if (this.clientFramework === 'angular1') {
+        this.angularAppName = this.getAngularAppName();
       }
 
       if (this.jhipsterMajorVersion > 2) {
@@ -82,6 +69,10 @@ module.exports = yeoman.Base.extend({
         this.appFolder = 'scripts/app/admin/elasticsearch-reindex/';
         this.serviceFolder = 'scripts/components/admin/';
       }
+
+      jhipsterVar.javaDir = `${jhipsterConstants.SERVER_MAIN_SRC_DIR + this.packageFolder}/`;
+      jhipsterVar.resourceDir = jhipsterConstants.SERVER_MAIN_RES_DIR;
+      jhipsterVar.webappDir = jhipsterConstants.CLIENT_MAIN_SRC_DIR;
     },
     validateVars: function () {
       if (!this.jhipsterVersion) {
@@ -124,22 +115,22 @@ module.exports = yeoman.Base.extend({
           this.template('src/main/webapp/js/elasticsearch-reindex.state.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.js', this, {});
         }
 
-        if (jhipsterFunc.addJavaScriptToIndex) {
-          jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.controller.js');
-          jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.controller.js');
+        if (this.addJavaScriptToIndex) {
+          this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.controller.js');
+          this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.controller.js');
           if (this.jhipsterMajorVersion > 2) {
-            jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.state.js');
-            jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex.service.js');
+            this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.state.js');
+            this.addJavaScriptToIndex('app/admin/elasticsearch-reindex.service.js');
           } else {
-            jhipsterFunc.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.js');
-            jhipsterFunc.addJavaScriptToIndex('components/admin/elasticsearch-reindex.service.js');
+            this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.js');
+            this.addJavaScriptToIndex('components/admin/elasticsearch-reindex.service.js');
           }
         }
 
-        if (jhipsterFunc.addElementToAdminMenu) {
-          jhipsterFunc.addElementToAdminMenu('elasticsearch-reindex', 'exclamation-sign', this.enableTranslation, this.clientFramework);
+        if (this.addElementToAdminMenu) {
+          this.addElementToAdminMenu('elasticsearch-reindex', 'exclamation-sign', this.enableTranslation, this.clientFramework);
           if (this.enableTranslation) {
-            jhipsterFunc.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', this.nativeLanguage);
+            this.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', this.nativeLanguage);
           }
         }
       } else if (this.clientFramework === 'angularX') {
@@ -158,11 +149,11 @@ module.exports = yeoman.Base.extend({
           this.log(chalk.yellow('  - at the beginning of the file: ') + 'import { ' + this.angularXAppName + 'ElasticsearchReindexModule } from \'./elasticsearch-reindex/elasticsearch-reindex.module\';');
           this.log(chalk.yellow('  - inside @NgModule, imports: ') + this.angularXAppName + 'ElasticsearchReindexModule\n');
         }
-        if (jhipsterFunc.addElementToAdminMenu) {
-          jhipsterFunc.addElementToAdminMenu('elasticsearch-reindex', 'fw fa-search', this.enableTranslation, this.clientFramework);
+        if (this.addElementToAdminMenu) {
+          this.addElementToAdminMenu('elasticsearch-reindex', 'fw fa-search', this.enableTranslation, this.clientFramework);
           if (this.enableTranslation) {
             this.languages.forEach((language) => {
-              jhipsterFunc.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', language);
+              this.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', language);
             });
           }
         }
@@ -176,7 +167,7 @@ module.exports = yeoman.Base.extend({
 
     registering: function () {
       try {
-        jhipsterFunc.registerModule("generator-jhipster-elasticsearch-reindexer", "entity", "post", "app", "Generate a service for reindexing all database rows for each of your entities");
+        this.registerModule("generator-jhipster-elasticsearch-reindexer", "entity", "post", "app", "Generate a service for reindexing all database rows for each of your entities");
       } catch (err) {
         this.log(chalk.red.bold('WARN!') + ' Could not register as a jhipster entity post creation hook...\n');
       }
