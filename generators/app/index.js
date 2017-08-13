@@ -57,7 +57,7 @@ module.exports = yeoman.Base.extend({
         this.clientFramework = 'angularX'
       }
 
-      // set the major version to 2 if it isn't specifified
+      // set the major version to 2 if it isn't specified
       this.jhipsterVersion = config.jhipsterVersion;
       if (!this.jhipsterVersion) {
         this.jhipsterMajorVersion = 2;

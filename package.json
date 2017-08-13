@@ -1,7 +1,7 @@
 {
   "name": "generator-jhipster-elasticsearch-reindexer",
   "version": "0.3.0",
-  "description": "Generate a service for reindexing all database rows for each of your entities",
+  "description": "Generates a service that reindexes all database rows for each of your entities",
   "keywords": [
     "yeoman-generator",
     "jhipster-module"
@@ -30,19 +30,29 @@
     "fs-extra": "0.30.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.0",
-    "gulp-bump": "1.0.0",
-    "gulp-eslint": "1.0.0",
-    "gulp-exclude-gitignore": "1.0.0",
-    "gulp-git": "1.6.1",
-    "gulp-istanbul": "0.10.3",
-    "gulp-mocha": "2.2.0",
-    "gulp-nsp": "2.3.0",
-    "gulp-plumber": "1.0.1",
-    "gulp-rename": "^1.2.0",
-    "gulp-sequence": "0.4.4",
-    "gulp-shell": "^0.5.1",
-    "yeoman-assert": "2.1.1"
+    "yeoman-test": "^1.6.0",
+    "yeoman-assert": "^3.0.0",
+    "coveralls": "^2.13.1",
+    "nsp": "^2.6.3",
+    "eslint": "^4.1.0",
+    "eslint-config-xo-space": "^0.16.0",
+    "jest": "^19.0.2",
+    "jest-cli": "^20.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "scripts": {
+    "prepublish": "nsp check",
+    "pretest": "eslint . --fix",
+    "test": "jest"
+  },
+  "eslintConfig": {
+    "extends": "xo-space",
+    "env": {
+      "jest": true,
+      "node": true
+    }
   },
   "license": "Apache-2.0",
   "bugs": {
