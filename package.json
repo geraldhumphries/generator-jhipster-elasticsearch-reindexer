@@ -24,7 +24,7 @@
     "yeoman-generator": "0.22.4",
     "chalk": "1.1.1",
     "mkdirp": "0.5.1",
-    "generator-jhipster": ">2.26.0",
+    "generator-jhipster": ">=2.27.0",
     "semver": "5.4.1",
     "shelljs": "0.5.3",
     "fs-extra": "0.30.0"
@@ -36,7 +36,7 @@
     "nsp": "^2.6.3",
     "eslint": "^4.1.0",
     "eslint-config-xo-space": "^0.16.0",
-    "jest": "^19.0.2",
+    "jest": "^20.0.0",
     "jest-cli": "^20.0.0"
   },
   "jest": {

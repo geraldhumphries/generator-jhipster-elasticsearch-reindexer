@@ -1,26 +1,47 @@
 'use strict';
-var path = require('path');
-var assert = require('yeoman-assert');
-var helpers = require('yeoman-test');
+const path = require('path');
+const assert = require('yeoman-assert');
+const helpers = require('yeoman-test');
+const fse = require('fs-extra');
 
-var generatedFiles = {
+// FIXME: doesn't work with older JH versions
+const jhipsterModules = require('../node_modules/generator-jhipster/generators/modules/index.js');
+
+const JAVA_PATH = 'src/main/java/com/mycompany/myapp/';
+const WEBAPP_PATH = 'src/main/webapp/';
+// FIXME: jhipster:modules can't see config
+const deps = [
+  [jhipsterModules, 'jhipster:modules']
+];
+const generatedFiles = {
   client: {
-    ng1: [],
-    ngX: [],
-    i18n: []
+    ng1: [
+    ],
+    ngX: [
+      WEBAPP_PATH + 'app/'
+    ],
+    i18n: [
+      WEBAPP_PATH + 'i18n/en/elasticsearch-reindex.json'
+    ]
   },
-  server: ['web/rest/ElasticsearchIndexResource.java', 'service/ElasticsearchIndexService.java']
+  server: [
+    JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java',
+    JAVA_PATH + 'service/ElasticsearchIndexService.java'
+  ]
 };
 
 describe('JHipster Elasticsearch Reindexer', () => {
 
   describe('AngularJS 1 app', () => {
     describe('without i18n', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/client-only'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates AngularJS 1 files', () => {
@@ -36,11 +57,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
     });
     describe('with i18n', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/ng1-i18n'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates AngularJS 1 files', () => {
@@ -59,11 +83,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
 
   describe('Angular 2+ app', () => {
     describe('without i18n', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/client-only'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates Angular 2+ files', () => {
@@ -79,11 +106,15 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
     });
     describe('with i18n', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            console.log('temp dir name: ', dir);
+            fse.copySync(path.join(__dirname, 'templates/client-only'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates Angular 2+ files', () => {
@@ -102,11 +133,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
 
   describe('Monolith', () => {
     describe('with user management', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/monolith'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates files', () => {
@@ -114,11 +148,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
     });
     describe('without user management', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/monolith'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates files', () => {
@@ -126,11 +163,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
     });
     describe('with constructor injection', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/monolith'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates files', () => {
@@ -138,11 +178,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
     });
     describe('without constructor injection', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/monolith'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates files', () => {
@@ -153,11 +196,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
 
   describe('Gateway', () => {
     describe('with user management', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates files', () => {
@@ -165,11 +211,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
     });
     describe('without user management', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates files', () => {
@@ -177,11 +226,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
     });
     describe('with constructor injection', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates files', () => {
@@ -189,11 +241,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
     });
     describe('without constructor injection', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates files', () => {
@@ -204,11 +259,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
 
   describe('Microservice', () => {
     describe('with constructor injection', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/microservice'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates files', () => {
@@ -216,11 +274,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
     });
     describe('without constructor injection', () => {
-      beforeAll((done) => {
-        helpers.run(path.join(__dirname, '../generators/app'))
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
-          .withPrompts()
-          .on('end', done);
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/microservice'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
       });
 
       it('creates files', () => {
@@ -230,6 +291,15 @@ describe('JHipster Elasticsearch Reindexer', () => {
   });
 
   describe('Server-only app', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .withGenerators(deps)
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/server-only'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
     it('skips adding client files', () => {
       assert.noFile(generatedFiles.client.i18n);
       assert.noFile(generatedFiles.client.ng1);
@@ -238,11 +308,13 @@ describe('JHipster Elasticsearch Reindexer', () => {
   });
 
   describe('Client-only app', () => {
-    beforeAll((done) => {
-      helpers.run(path.join(__dirname, '../generators/app'))
-        .withOptions({skipInstall: true, skipChecks: true})
-        .withPrompts()
-        .on('end', done);
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .withGenerators(deps)
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/client-only'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
     });
 
     it('skips adding server files', () => {
