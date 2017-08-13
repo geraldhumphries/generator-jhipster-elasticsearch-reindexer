@@ -52,7 +52,7 @@ module.exports = yeoman.Base.extend({
       this.enableTranslation = config.enableTranslation;
       this.clientFramework = config.clientFramework;
 
-      // for backwards compatability
+      // for backwards compatibility
       if (this.clientFramework === 'angular2') {
         this.clientFramework = 'angularX'
       }
@@ -64,7 +64,7 @@ module.exports = yeoman.Base.extend({
       } else {
         this.jhipsterMajorVersion = config.jhipsterVersion[0];
       }
-      this.requiresSetLocation = semver.lt(this.jhipsterVersion, '4.4.4');
+      this.requiresSetLocation = this.jhipsterVersion ? semver.lt(this.jhipsterVersion, '4.4.4') : false;
       this.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
         return file.match(/\.json$/);
       });
