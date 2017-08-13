@@ -3,6 +3,15 @@ var path = require('path');
 var assert = require('yeoman-assert');
 var helpers = require('yeoman-test');
 
+var generatedFiles = {
+  client: {
+    ng1: [],
+    ngX: [],
+    i18n: []
+  },
+  server: ['web/rest/ElasticsearchIndexResource.java', 'service/ElasticsearchIndexService.java']
+};
+
 describe('JHipster Elasticsearch Reindexer', () => {
 
   describe('AngularJS 1 app', () => {
@@ -14,19 +23,17 @@ describe('JHipster Elasticsearch Reindexer', () => {
           .on('end', done);
       });
 
-      it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+      it('creates AngularJS 1 files', () => {
+        assert.file(generatedFiles.client.ng1);
       });
 
-      it('skips adding i18n files', () => {
-        assert.noFile([
-          'dummyfile.txt'
-        ]);
+      it('skips creating Angular 2+ files', () => {
+        assert.noFile(generatedFiles.client.ngX);
       });
 
-      it('')
+      it('skips creating i18n files', () => {
+        assert.noFile(generatedFiles.client.i18n);
+      });
     });
     describe('with i18n', () => {
       beforeAll((done) => {
@@ -36,16 +43,16 @@ describe('JHipster Elasticsearch Reindexer', () => {
           .on('end', done);
       });
 
-      it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+      it('creates AngularJS 1 files', () => {
+        assert.file(generatedFiles.client.ng1);
       });
 
-      it('skips adding i18n files', () => {
-        assert.noFile([
-          'dummyfile.txt'
-        ]);
+      it('skips creating Angular 2+ files', () => {
+        assert.noFile(generatedFiles.client.ngX);
+      });
+
+      it('creates i18n files', () => {
+        assert.file(generatedFiles.client.i18n);
       });
     });
   });
@@ -59,22 +66,16 @@ describe('JHipster Elasticsearch Reindexer', () => {
           .on('end', done);
       });
 
-      it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+      it('creates Angular 2+ files', () => {
+        assert.file(generatedFiles.client.ngX);
       });
 
-      it('skips adding i18n files', () => {
-        assert.noFile([
-          'dummyfile.txt'
-        ]);
+      it('skips creating AngularJS 1 files', () => {
+        assert.noFile(generatedFiles.client.ng1);
       });
 
-      it('skips adding i18n injection', () => {
-        assert.noFile([
-          'dummyfile.txt'
-        ]);
+      it('skips creating i18n files', () => {
+        assert.noFile(generatedFiles.client.i18n);
       });
     });
     describe('with i18n', () => {
@@ -85,14 +86,16 @@ describe('JHipster Elasticsearch Reindexer', () => {
           .on('end', done);
       });
 
-      it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+      it('creates Angular 2+ files', () => {
+        assert.file(generatedFiles.client.ngX);
       });
 
-      it('adds i18n injection', () => {
+      it('skips creating AngularJS 1 files', () => {
+        assert.noFile(generatedFiles.client.ng1);
+      });
 
+      it('creates i18n files', () => {
+        assert.file(generatedFiles.client.i18n);
       });
     });
   });
@@ -107,18 +110,8 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
 
       it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+        assert.file(generatedFiles.server);
       });
-
-      it('skips adding i18n files', () => {
-        assert.noFile([
-          'dummyfile.txt'
-        ]);
-      });
-
-      it('')
     });
     describe('without user management', () => {
       beforeAll((done) => {
@@ -129,18 +122,8 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
 
       it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+        assert.file(generatedFiles.server);
       });
-
-      it('skips adding i18n files', () => {
-        assert.noFile([
-          'dummyfile.txt'
-        ]);
-      });
-
-      it('')
     });
     describe('with constructor injection', () => {
       beforeAll((done) => {
@@ -151,9 +134,7 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
 
       it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+        assert.file(generatedFiles.server);
       });
     });
     describe('without constructor injection', () => {
@@ -165,9 +146,7 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
 
       it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+        assert.file(generatedFiles.server);
       });
     });
   });
@@ -182,18 +161,8 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
 
       it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+        assert.file(generatedFiles.server);
       });
-
-      it('skips adding i18n files', () => {
-        assert.noFile([
-          'dummyfile.txt'
-        ]);
-      });
-
-      it('')
     });
     describe('without user management', () => {
       beforeAll((done) => {
@@ -204,18 +173,8 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
 
       it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+        assert.file(generatedFiles.server);
       });
-
-      it('skips adding i18n files', () => {
-        assert.noFile([
-          'dummyfile.txt'
-        ]);
-      });
-
-      it('')
     });
     describe('with constructor injection', () => {
       beforeAll((done) => {
@@ -226,9 +185,7 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
 
       it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+        assert.file(generatedFiles.server);
       });
     });
     describe('without constructor injection', () => {
@@ -240,9 +197,7 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
 
       it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+        assert.file(generatedFiles.server);
       });
     });
   });
@@ -257,9 +212,7 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
 
       it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+        assert.file(generatedFiles.server);
       });
     });
     describe('without constructor injection', () => {
@@ -271,18 +224,16 @@ describe('JHipster Elasticsearch Reindexer', () => {
       });
 
       it('creates files', () => {
-        assert.file([
-          'dummyfile.txt'
-        ]);
+        assert.file(generatedFiles.server);
       });
     });
   });
 
   describe('Server-only app', () => {
     it('skips adding client files', () => {
-      assert.noFile([
-        'dummyfile.txt'
-      ]);
+      assert.noFile(generatedFiles.client.i18n);
+      assert.noFile(generatedFiles.client.ng1);
+      assert.noFile(generatedFiles.client.ngX);
     });
   });
 
@@ -295,9 +246,7 @@ describe('JHipster Elasticsearch Reindexer', () => {
     });
 
     it('skips adding server files', () => {
-      assert.noFile([
-        'dummyfile.txt'
-      ]);
+      assert.noFile(generatedFiles.server);
     });
   });
 
