@@ -16,10 +16,17 @@ try {
     SERVER_MAIN_SRC_DIR: 'src/main/java/',
     SERVER_MAIN_RES_DIR: 'src/main/resources/',
     CLIENT_MAIN_SRC_DIR: 'src/main/webapp/'
-  }
+  };
 }
 
-var JhipsterGenerator = generator.extend({});
+var JhipsterGenerator;
+
+if (generator.extend) {
+  JhipsterGenerator = generator.extend({});
+} else {
+  JhipsterGenerator = generator.Base.extend({});
+}
+
 util.inherits(JhipsterGenerator, BaseGenerator);
 
 // Stores JHipster variables
@@ -131,6 +138,10 @@ module.exports = JhipsterGenerator.extend({
         this.log(chalk.yellow('WARNING angularAppName is missing in JHipster configuration, using baseName as fallback'));
         this.angularAppName = this.baseName;
       }
+      if (this.enableTranslation && !this.languages) {
+        this.log(chalk.yellow('WARNING enableTranslations is true but languages is missing in JHipster configuration, using \'en, fr\' as fallback'));
+        this.languages = ['en', 'fr'];
+      }
     },
     writeTemplates: function () {
       if (!this.skipServer) {
@@ -210,7 +221,7 @@ module.exports = JhipsterGenerator.extend({
 
     registering: function () {
       try {
-        this.registerModule("generator-jhipster-elasticsearch-reindexer", "entity", "post", "app", "Generate a service for reindexing all database rows for each of your entities");
+        this.registerModule('generator-jhipster-elasticsearch-reindexer', 'entity', 'post', 'app', 'Generate a service for reindexing all database rows for each of your entities');
       } catch (err) {
         this.log(chalk.red.bold('WARN!') + ' Could not register as a jhipster entity post creation hook...\n');
       }

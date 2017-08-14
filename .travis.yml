@@ -1,14 +1,21 @@
 language: node_js
 node_js:
   - 7
-  - 6
-  - 4
 after_script: 'cat ./coverage/lcov.info | coveralls'
 env:
+  global:
+    - CXX=g++-4.8
   matrix:
-    - JHIPSTER_VERSION=2.27.0
-    - JHIPSTER_VERSION=4.6.0
-    - JHIPSTER_VERSION=3.0.0
+    - JHIPSTER_VERSION=2.27.0 YEOMAN_VERSION=0.22.2
+    - JHIPSTER_VERSION=3.0.0 YEOMAN_VERSION=0.22.5
+    - JHIPSTER_VERSION=4.6.0 YEOMAN_VERSION=1.1.1
+    - JHIPSTER_VERSION=latest YEOMAN_VERSION=latest
 install:
   - npm install
-  - npm install generator-jhipster@$JHIPSTER_VERSION
+  - npm install generator-jhipster@$JHIPSTER_VERSION yeoman-generator@$YEOMAN_VERSION
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8

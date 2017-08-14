@@ -38,6 +38,8 @@ const generatedFiles = {
   ]
 };
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
 describe('JHipster Elasticsearch Reindexer', () => {
 
   describe('AngularJS 1 app', () => {
