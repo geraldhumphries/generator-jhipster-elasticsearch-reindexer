@@ -127,5 +127,8 @@
       }
     ],
     "space-return-throw-case": 2
+  },
+  "parserOptions": {
+    "ecmaVersion": 6
   }
 }
