@@ -4,7 +4,6 @@ var generator = require('yeoman-generator');
 var chalk = require('chalk');
 var packagejs = require(__dirname + '/../../package.json');
 var shelljs = require('shelljs');
-var fs = require('fs');
 var fse = require('fs-extra');
 var semver = require('semver');
 
@@ -37,7 +36,7 @@ module.exports = JhipsterGenerator.extend({
 
   writing: {
     setUpVars: function () {
-      var config = _getConfig(this);
+      var config = getConfig(this);
       this.applicationType = config.applicationType;
       this.nativeLanguage = config.nativeLanguage;
       this.languages = config.languages;
@@ -81,7 +80,7 @@ module.exports = JhipsterGenerator.extend({
       jhipsterVar.resourceDir = jhipsterConstants.SERVER_MAIN_RES_DIR;
       jhipsterVar.webappDir = jhipsterConstants.CLIENT_MAIN_SRC_DIR;
 
-      function _getConfig(context) {
+      function getConfig(context) {
         if (context.getJhipsterAppConfig) {
           return context.getJhipsterAppConfig();
         }
