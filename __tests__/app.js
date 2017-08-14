@@ -4,24 +4,32 @@ const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
 const fse = require('fs-extra');
 
-// FIXME: doesn't work with older JH versions
-const jhipsterModules = require('../node_modules/generator-jhipster/generators/modules/index.js');
-
 const JAVA_PATH = 'src/main/java/com/mycompany/myapp/';
 const WEBAPP_PATH = 'src/main/webapp/';
-// FIXME: jhipster:modules can't see config
-const deps = [
-  [jhipsterModules, 'jhipster:modules']
-];
+
 const generatedFiles = {
   client: {
     ng1: [
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.controller.js',
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.html',
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.js',
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.state.js',
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.controller.js',
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.html',
     ],
     ngX: [
-      WEBAPP_PATH + 'app/'
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.component.html',
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.component.ts',
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.module.ts',
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.route.ts',
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-modal.component.html',
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-modal.component.ts',
+      WEBAPP_PATH + 'app/admin/elasticsearch-reindex/index.ts',
     ],
     i18n: [
-      WEBAPP_PATH + 'i18n/en/elasticsearch-reindex.json'
+      WEBAPP_PATH + 'i18n/en/elasticsearch-reindex.json',
+      WEBAPP_PATH + 'i18n/fr/elasticsearch-reindex.json'
     ]
   },
   server: [
@@ -36,10 +44,9 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('without i18n', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
-            fse.copySync(path.join(__dirname, 'templates/client-only'), dir);
+            fse.copySync(path.join(__dirname, 'templates/ng1-noi18n'), dir);
             fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
           });
       });
@@ -59,7 +66,6 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('with i18n', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
             fse.copySync(path.join(__dirname, 'templates/ng1-i18n'), dir);
@@ -85,10 +91,9 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('without i18n', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
-            fse.copySync(path.join(__dirname, 'templates/client-only'), dir);
+            fse.copySync(path.join(__dirname, 'templates/ng2-noi18n'), dir);
             fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
           });
       });
@@ -108,11 +113,9 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('with i18n', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
-            console.log('temp dir name: ', dir);
-            fse.copySync(path.join(__dirname, 'templates/client-only'), dir);
+            fse.copySync(path.join(__dirname, 'templates/ng2-i18n'), dir);
             fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
           });
       });
@@ -135,7 +138,6 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('with user management', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
             fse.copySync(path.join(__dirname, 'templates/monolith'), dir);
@@ -150,7 +152,6 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('without user management', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
             fse.copySync(path.join(__dirname, 'templates/monolith'), dir);
@@ -165,7 +166,6 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('with constructor injection', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
             fse.copySync(path.join(__dirname, 'templates/monolith'), dir);
@@ -180,7 +180,6 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('without constructor injection', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
             fse.copySync(path.join(__dirname, 'templates/monolith'), dir);
@@ -198,7 +197,6 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('with user management', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
             fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
@@ -213,7 +211,6 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('without user management', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
             fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
@@ -228,7 +225,6 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('with constructor injection', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
             fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
@@ -243,7 +239,6 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('without constructor injection', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
             fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
@@ -261,7 +256,6 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('with constructor injection', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
             fse.copySync(path.join(__dirname, 'templates/microservice'), dir);
@@ -276,7 +270,6 @@ describe('JHipster Elasticsearch Reindexer', () => {
     describe('without constructor injection', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
-          .withGenerators(deps)
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
             fse.copySync(path.join(__dirname, 'templates/microservice'), dir);
@@ -293,14 +286,17 @@ describe('JHipster Elasticsearch Reindexer', () => {
   describe('Server-only app', () => {
     beforeAll(() => {
       return helpers.run(path.join(__dirname, '../generators/app'))
-        .withGenerators(deps)
         .inTmpDir((dir) => {
           fse.copySync(path.join(__dirname, 'templates/server-only'), dir);
           fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
         });
     });
 
-    it('skips adding client files', () => {
+    it('creates server files', () => {
+      assert.file(generatedFiles.server);
+    });
+
+    it('skips creating client files', () => {
       assert.noFile(generatedFiles.client.i18n);
       assert.noFile(generatedFiles.client.ng1);
       assert.noFile(generatedFiles.client.ngX);
@@ -310,14 +306,13 @@ describe('JHipster Elasticsearch Reindexer', () => {
   describe('Client-only app', () => {
     beforeAll(() => {
       return helpers.run(path.join(__dirname, '../generators/app'))
-        .withGenerators(deps)
         .inTmpDir((dir) => {
           fse.copySync(path.join(__dirname, 'templates/client-only'), dir);
           fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
         });
     });
 
-    it('skips adding server files', () => {
+    it('skips creating server files', () => {
       assert.noFile(generatedFiles.server);
     });
   });
