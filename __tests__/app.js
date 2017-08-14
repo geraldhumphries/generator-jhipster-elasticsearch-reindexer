@@ -97,7 +97,7 @@ describe('JHipster Elasticsearch Reindexer', () => {
             fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
           });
       });
-
+g
       it('creates Angular 2+ files', () => {
         assert.file(generatedFiles.client.ngX);
       });

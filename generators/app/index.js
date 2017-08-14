@@ -5,9 +5,20 @@ var chalk = require('chalk');
 var packagejs = require(__dirname + '/../../package.json');
 var shelljs = require('shelljs');
 var fs = require('fs');
+var fse = require('fs-extra');
 var semver = require('semver');
-var BaseGenerator = require('generator-jhipster/generators/generator-base');
-var jhipsterConstants = require('generator-jhipster/generators/generator-constants');
+
+try {
+  var BaseGenerator = require('generator-jhipster/generators/generator-base');
+  var jhipsterConstants = require('generator-jhipster/generators/generator-constants');
+} catch (err) {
+  BaseGenerator = require('generator-jhipster/script-base');
+  jhipsterConstants = {
+    SERVER_MAIN_SRC_DIR: 'src/main/java/',
+    SERVER_MAIN_RES_DIR: 'src/main/resources/',
+    CLIENT_MAIN_SRC_DIR: 'src/main/webapp/'
+  }
+}
 
 var JhipsterGenerator = generator.extend({});
 util.inherits(JhipsterGenerator, BaseGenerator);
@@ -26,21 +37,21 @@ module.exports = JhipsterGenerator.extend({
 
   writing: {
     setUpVars: function () {
-      var config = this.getJhipsterAppConfig()
+      var config = _getConfig(this);
       this.applicationType = config.applicationType;
       this.nativeLanguage = config.nativeLanguage;
       this.languages = config.languages;
       this.searchEngine = config.searchEngine;
       this.enableTranslation = config.enableTranslation;
+      this.baseName = config.baseName;
+      this.packageName = config.packageName;
+      this.packageFolder = config.packageFolder;
       this.clientFramework = config.clientFramework;
-
-      // for backwards compatibility
-      if (this.clientFramework === 'angular2') {
-        this.clientFramework = 'angularX'
-      }
+      this.skipClient = config.skipClient;
+      this.skipServer = config.skipServer;
+      this.jhipsterVersion = config.jhipsterVersion;
 
       // set the major version to 2 if it isn't specified
-      this.jhipsterVersion = config.jhipsterVersion;
       if (!this.jhipsterVersion) {
         this.jhipsterMajorVersion = 2;
       } else {
@@ -50,16 +61,12 @@ module.exports = JhipsterGenerator.extend({
       this.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
         return file.match(/\.json$/);
       });
-      this.baseName = config.baseName;
-      this.packageName = config.packageName;
-      this.packageFolder = config.packageFolder;
-      this.clientFramework = config.clientFramework;
 
       // this variable is used in templates
-      if (this.clientFramework === 'angularX' || this.clientFramework === 'angular2') {
-        this.angular2AppName = this.getAngularXAppName();
+      if (this.clientFramework === 'angularX') {
+        this.angularXAppName = this.getAngularXAppName ? this.getAngularXAppName() : config.angularXAppName;
       } else if (this.clientFramework === 'angular1') {
-        this.angularAppName = this.getAngularAppName();
+        this.angularAppName = this.getAngularAppName ? this.getAngularAppName() : config.angularAppName;
       }
 
       if (this.jhipsterMajorVersion > 2) {
@@ -73,6 +80,22 @@ module.exports = JhipsterGenerator.extend({
       jhipsterVar.javaDir = `${jhipsterConstants.SERVER_MAIN_SRC_DIR + this.packageFolder}/`;
       jhipsterVar.resourceDir = jhipsterConstants.SERVER_MAIN_RES_DIR;
       jhipsterVar.webappDir = jhipsterConstants.CLIENT_MAIN_SRC_DIR;
+
+      function _getConfig(context) {
+        if (context.getJhipsterAppConfig) {
+          return context.getJhipsterAppConfig();
+        }
+
+        var fromPath = '.yo-rc.json';
+
+        if (shelljs.test('-f', fromPath)) {
+          var fileData = fse.readJsonSync(fromPath);
+          if (fileData && fileData['generator-jhipster']) {
+            return fileData['generator-jhipster'];
+          }
+        }
+        return false;
+      }
     },
     validateVars: function () {
       if (!this.jhipsterVersion) {
@@ -97,70 +120,91 @@ module.exports = JhipsterGenerator.extend({
         this.log(chalk.yellow('WARNING clientFramework is missing in JHipster configuration, using angular1 as fallback'));
         this.clientFramework = 'angular1';
       }
+      // for backwards compatibility
+      if (this.clientFramework === 'angular2') {
+        this.clientFramework = 'angularX';
+      }
+      if (this.clientFramework === 'angularX' && !this.angularXAppName) {
+        this.log(chalk.yellow('WARNING angularXAppName/angular2AppName is missing in JHipster configuration, using baseName as fallback'));
+        this.angularXAppName = this.baseName;
+      }
+      if (this.clientFramework === 'angular1' && !this.angularAppName) {
+        this.log(chalk.yellow('WARNING angularAppName is missing in JHipster configuration, using baseName as fallback'));
+        this.angularAppName = this.baseName;
+      }
     },
     writeTemplates: function () {
-      this.template('src/main/java/package/web/rest/_ElasticsearchIndexResource.java', jhipsterVar.javaDir + 'web/rest/ElasticsearchIndexResource.java', this, {});
-      this.template('src/main/java/package/service/_ElasticsearchIndexService.java', jhipsterVar.javaDir + 'service/ElasticsearchIndexService.java', this, {});
-      if (this.clientFramework === 'angular1') {
-        this.template('src/main/webapp/js/elasticsearch-reindex.controller.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.controller.js', this, {});
-        this.template('src/main/webapp/js/elasticsearch-reindex-dialog.controller.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-dialog.controller.js', this, {});
-        this.template('src/main/webapp/i18n/elasticsearch-reindex.json', jhipsterVar.webappDir + 'i18n/' + this.nativeLanguage + '/elasticsearch-reindex.json', this, {});
-        this.template('src/main/webapp/js/elasticsearch-reindex.service.js', jhipsterVar.webappDir + this.serviceFolder + '/elasticsearch-reindex.service.js', this, {});
-        this.template('src/main/webapp/html/elasticsearch-reindex.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.html', this, {});
-        this.template('src/main/webapp/html/elasticsearch-reindex-dialog.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-dialog.html', this, {});
+      if (!this.skipServer) {
+        this.template('src/main/java/package/web/rest/_ElasticsearchIndexResource.java', jhipsterVar.javaDir + 'web/rest/ElasticsearchIndexResource.java', this, {});
+        this.template('src/main/java/package/service/_ElasticsearchIndexService.java', jhipsterVar.javaDir + 'service/ElasticsearchIndexService.java', this, {});
+      }
+      if (!this.skipClient) {
+        if (this.clientFramework === 'angular1') {
+          this.template('src/main/webapp/js/elasticsearch-reindex.controller.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.controller.js', this, {});
+          this.template('src/main/webapp/js/elasticsearch-reindex-dialog.controller.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-dialog.controller.js', this, {});
+          this.template('src/main/webapp/js/elasticsearch-reindex.service.js', jhipsterVar.webappDir + this.serviceFolder + '/elasticsearch-reindex.service.js', this, {});
+          this.template('src/main/webapp/html/elasticsearch-reindex.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.html', this, {});
+          this.template('src/main/webapp/html/elasticsearch-reindex-dialog.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-dialog.html', this, {});
 
-        if (this.jhipsterMajorVersion > 2) {
-          this.template('src/main/webapp/js/elasticsearch-reindex.state.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.state.js', this, {});
-        } else {
-          this.template('src/main/webapp/js/elasticsearch-reindex.state.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.js', this, {});
-        }
-
-        if (this.addJavaScriptToIndex) {
-          this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.controller.js');
-          this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.controller.js');
-          if (this.jhipsterMajorVersion > 2) {
-            this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.state.js');
-            this.addJavaScriptToIndex('app/admin/elasticsearch-reindex.service.js');
-          } else {
-            this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.js');
-            this.addJavaScriptToIndex('components/admin/elasticsearch-reindex.service.js');
-          }
-        }
-
-        if (this.addElementToAdminMenu) {
-          this.addElementToAdminMenu('elasticsearch-reindex', 'exclamation-sign', this.enableTranslation, this.clientFramework);
-          if (this.enableTranslation) {
-            this.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', this.nativeLanguage);
-          }
-        }
-      } else if (this.clientFramework === 'angularX') {
-        this.template('src/main/webapp/ts/_elasticsearch-reindex-modal.component.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-modal.component.html', this, {});
-        this.template('src/main/webapp/ts/_elasticsearch-reindex-modal.component.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-modal.component.ts', this, {});
-        this.template('src/main/webapp/ts/_elasticsearch-reindex.component.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.component.html', this, {});
-        this.template('src/main/webapp/ts/_elasticsearch-reindex.component.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.component.ts', this, {});
-        this.template('src/main/webapp/ts/_elasticsearch-reindex.module.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.module.ts', this, {});
-        this.template('src/main/webapp/ts/_elasticsearch-reindex.route.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.route.ts', this, {});
-        this.template('src/main/webapp/ts/_elasticsearch-reindex.service.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.service.ts', this, {});
-        this.template('src/main/webapp/ts/_index.ts', jhipsterVar.webappDir + this.appFolder + '/index.ts', this, {});
-        if (jhipsterFunc.addAdminToModule) {
-          jhipsterFunc.addAdminToModule(this.angularXAppName, 'ElasticsearchReindex', 'elasticsearch-reindex', 'elasticsearch-reindex', this.enableTranslation, this.clientFramework);
-        } else {
-          this.log(chalk.yellow('WARNING the function addAdminToModule is missing, you need to add the missing import in src/main/webapp/app/admin/admin.module.ts:'));
-          this.log(chalk.yellow('  - at the beginning of the file: ') + 'import { ' + this.angularXAppName + 'ElasticsearchReindexModule } from \'./elasticsearch-reindex/elasticsearch-reindex.module\';');
-          this.log(chalk.yellow('  - inside @NgModule, imports: ') + this.angularXAppName + 'ElasticsearchReindexModule\n');
-        }
-        if (this.addElementToAdminMenu) {
-          this.addElementToAdminMenu('elasticsearch-reindex', 'fw fa-search', this.enableTranslation, this.clientFramework);
           if (this.enableTranslation) {
             this.languages.forEach((language) => {
-              this.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', language);
+              this.template('src/main/webapp/i18n/elasticsearch-reindex.json', jhipsterVar.webappDir + 'i18n/' + language + '/elasticsearch-reindex.json', this, {});
             });
           }
-        }
-        if (this.enableTranslation) {
-          this.languages.forEach((language) => {
-            this.template('src/main/webapp/i18n/elasticsearch-reindex.json', jhipsterVar.webappDir + 'i18n/' + language + '/elasticsearch-reindex.json', this, {});
-          });
+
+          if (this.jhipsterMajorVersion > 2) {
+            this.template('src/main/webapp/js/elasticsearch-reindex.state.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.state.js', this, {});
+          } else {
+            this.template('src/main/webapp/js/elasticsearch-reindex.state.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.js', this, {});
+          }
+
+          if (this.addJavaScriptToIndex) {
+            this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.controller.js');
+            this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.controller.js');
+            if (this.jhipsterMajorVersion > 2) {
+              this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.state.js');
+              this.addJavaScriptToIndex('app/admin/elasticsearch-reindex.service.js');
+            } else {
+              this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.js');
+              this.addJavaScriptToIndex('components/admin/elasticsearch-reindex.service.js');
+            }
+          }
+
+          if (this.addElementToAdminMenu) {
+            this.addElementToAdminMenu('elasticsearch-reindex', 'exclamation-sign', this.enableTranslation, this.clientFramework);
+            if (this.enableTranslation) {
+              this.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', this.nativeLanguage);
+            }
+          }
+        } else if (this.clientFramework === 'angularX') {
+          this.template('src/main/webapp/ts/_elasticsearch-reindex-modal.component.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-modal.component.html', this, {});
+          this.template('src/main/webapp/ts/_elasticsearch-reindex-modal.component.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-modal.component.ts', this, {});
+          this.template('src/main/webapp/ts/_elasticsearch-reindex.component.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.component.html', this, {});
+          this.template('src/main/webapp/ts/_elasticsearch-reindex.component.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.component.ts', this, {});
+          this.template('src/main/webapp/ts/_elasticsearch-reindex.module.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.module.ts', this, {});
+          this.template('src/main/webapp/ts/_elasticsearch-reindex.route.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.route.ts', this, {});
+          this.template('src/main/webapp/ts/_elasticsearch-reindex.service.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.service.ts', this, {});
+          this.template('src/main/webapp/ts/_index.ts', jhipsterVar.webappDir + this.appFolder + '/index.ts', this, {});
+          if (this.addAdminToModule) {
+            this.addAdminToModule(this.angularXAppName, 'ElasticsearchReindex', 'elasticsearch-reindex', 'elasticsearch-reindex', this.enableTranslation, this.clientFramework);
+          } else {
+            this.log(chalk.yellow('WARNING the function addAdminToModule is missing, you need to add the missing import in src/main/webapp/app/admin/admin.module.ts:'));
+            this.log(chalk.yellow('  - at the beginning of the file: ') + 'import { ' + this.angularXAppName + 'ElasticsearchReindexModule } from \'./elasticsearch-reindex/elasticsearch-reindex.module\';');
+            this.log(chalk.yellow('  - inside @NgModule, imports: ') + this.angularXAppName + 'ElasticsearchReindexModule\n');
+          }
+          if (this.addElementToAdminMenu) {
+            this.addElementToAdminMenu('elasticsearch-reindex', 'fw fa-search', this.enableTranslation, this.clientFramework);
+            if (this.enableTranslation) {
+              this.languages.forEach((language) => {
+                this.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', language);
+              });
+            }
+          }
+          if (this.enableTranslation) {
+            this.languages.forEach((language) => {
+              this.template('src/main/webapp/i18n/elasticsearch-reindex.json', jhipsterVar.webappDir + 'i18n/' + language + '/elasticsearch-reindex.json', this, {});
+            });
+          }
         }
       }
     },
