@@ -4,3 +4,11 @@ node_js:
   - 6
   - 4
 after_script: 'cat ./coverage/lcov.info | coveralls'
+env:
+  matrix:
+    - JHIPSTER_VERSION=2.27.0
+    - JHIPSTER_VERSION=4.6.0
+    - JHIPSTER_VERSION=3.0.0
+install:
+  - npm install
+  - npm install generator-jhipster@$JHIPSTER_VERSION
