@@ -255,33 +255,8 @@ describe('JHipster Elasticsearch Reindexer', () => {
   });
 
   describe('Microservice', () => {
-    describe('with constructor injection', () => {
-      beforeAll(() => {
-        return helpers.run(path.join(__dirname, '../generators/app'))
-          .withOptions({skipInstall: true, skipChecks: true})
-          .inTmpDir((dir) => {
-            fse.copySync(path.join(__dirname, 'templates/microservice'), dir);
-            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
-          });
-      });
-
-      it('creates files', () => {
-        assert.file(generatedFiles.server);
-      });
-    });
-    describe('without constructor injection', () => {
-      beforeAll(() => {
-        return helpers.run(path.join(__dirname, '../generators/app'))
-          .withOptions({skipInstall: true, skipChecks: true})
-          .inTmpDir((dir) => {
-            fse.copySync(path.join(__dirname, 'templates/microservice'), dir);
-            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
-          });
-      });
-
-      it('creates files', () => {
-        assert.file(generatedFiles.server);
-      });
+    it('creates files', () => {
+      assert.file(generatedFiles.server);
     });
   });
 
@@ -302,6 +277,98 @@ describe('JHipster Elasticsearch Reindexer', () => {
       assert.noFile(generatedFiles.client.i18n);
       assert.noFile(generatedFiles.client.ng1);
       assert.noFile(generatedFiles.client.ngX);
+    });
+  });
+
+  describe('App with constructor injection', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .withOptions({skipInstall: true, skipChecks: true})
+        .inTmpDir((dir) => {
+          // JHipster major version >= 4
+          fse.copySync(path.join(__dirname, 'templates/constructor-injection'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('creates files', () => {
+      assert.file(generatedFiles.server);
+    });
+
+    it('resource does not import Inject annotation', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import javax.inject.Inject;');
+    });
+
+    it('resource does not use Inject annotation', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', '@Inject');
+    });
+
+    it('resource has constructor', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'ElasticsearchIndexResource(');
+    });
+
+    it('resource uses constructor injection', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'private final ElasticsearchIndexService elasticsearchIndexService;');
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'this.elasticsearchIndexService = elasticsearchIndexService;');
+    });
+
+    it('service does not import Inject annotation', () => {
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'import javax.inject.Inject;');
+    });
+
+    it('service does not use Inject annotation', () => {
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', '@Inject');
+    });
+
+    it('service has constructor', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'ElasticsearchIndexService(');
+    });
+
+    it('service uses constructor injection', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'private final TestRepository testRepository;');
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'this.testRepository = testRepository;');
+    });
+  });
+
+  describe('App with field injection', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .withOptions({skipInstall: true, skipChecks: true})
+        .inTmpDir((dir) => {
+          // JHipster major version < 4
+          fse.copySync(path.join(__dirname, 'templates/field-injection'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('creates files', () => {
+      assert.file(generatedFiles.server);
+    });
+
+    it('resource imports Inject annotation', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import javax.inject.Inject;');
+    });
+
+    it('resource uses field injection', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', '@Inject');
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'private ElasticsearchIndexService elasticsearchIndexService;');
+    });
+
+    it('resource does not have constructor', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'ElasticsearchIndexResource(');
+    });
+
+    it('service imports Inject annotation', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'import javax.inject.Inject;');
+    });
+
+    it('service uses field injection', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', '@Inject');
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'private TestRepository testRepository;');
+    });
+
+    it('service does not have constructor', () => {
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'ElasticsearchIndexService(');
     });
   });
 
