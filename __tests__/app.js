@@ -82,6 +82,7 @@ describe('JHipster Elasticsearch Reindexer', () => {
         assert.noFileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex-dialog.html', '<jhi-alert-error></jhi-alert-error>');
       });
     });
+
     describe('after JHipster version 3', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
@@ -90,10 +91,6 @@ describe('JHipster Elasticsearch Reindexer', () => {
             fse.copySync(path.join(__dirname, 'templates/jhv3'), dir);
             fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
           });
-      });
-
-      it('creates AngularJS 1 files', () => {
-        assert.file(generatedFiles.client.ng1);
       });
 
       it('uses jhi-alert directive', () => {
@@ -112,6 +109,7 @@ describe('JHipster Elasticsearch Reindexer', () => {
         assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.html', '<jh-alert-error></jh-alert-error>');
       });
     });
+
     describe('without i18n', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
@@ -133,7 +131,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
       it('skips creating i18n files', () => {
         assert.noFile(generatedFiles.client.i18n);
       });
+
+      it('does not use tabs anywhere', () => {
+        generatedFiles.client.ng1.forEach((filePath) => {
+          assert.noFileContent(filePath, '\t');
+        });
+      });
     });
+
     describe('with i18n', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
@@ -154,6 +159,16 @@ describe('JHipster Elasticsearch Reindexer', () => {
 
       it('creates i18n files', () => {
         assert.file(generatedFiles.client.i18n);
+      });
+
+
+      it('does not use tabs anywhere', () => {
+        generatedFiles.client.ng1.forEach((filePath) => {
+          assert.noFileContent(filePath, '\t');
+        });
+        generatedFiles.client.i18n.forEach((filePath) => {
+          assert.noFileContent(filePath, '\t');
+        });
       });
     });
   });
@@ -180,7 +195,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
       it('skips creating i18n files', () => {
         assert.noFile(generatedFiles.client.i18n);
       });
+
+      it('does not use tabs anywhere', () => {
+        generatedFiles.client.ngX.forEach((filePath) => {
+          assert.noFileContent(filePath, '\t');
+        });
+      });
     });
+
     describe('with i18n', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
@@ -202,6 +224,15 @@ describe('JHipster Elasticsearch Reindexer', () => {
       it('creates i18n files', () => {
         assert.file(generatedFiles.client.i18n);
       });
+
+      it('does not use tabs anywhere', () => {
+        generatedFiles.client.ngX.forEach((filePath) => {
+          assert.noFileContent(filePath, '\t');
+        });
+        generatedFiles.client.i18n.forEach((filePath) => {
+          assert.noFileContent(filePath, '\t');
+        });
+      });
     });
   });
 
@@ -220,35 +251,8 @@ describe('JHipster Elasticsearch Reindexer', () => {
         assert.file(generatedFiles.server);
       });
     });
+
     describe('without user management', () => {
-      beforeAll(() => {
-        return helpers.run(path.join(__dirname, '../generators/app'))
-          .withOptions({skipInstall: true, skipChecks: true})
-          .inTmpDir((dir) => {
-            fse.copySync(path.join(__dirname, 'templates/monolith'), dir);
-            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
-          });
-      });
-
-      it('creates files', () => {
-        assert.file(generatedFiles.server);
-      });
-    });
-    describe('with constructor injection', () => {
-      beforeAll(() => {
-        return helpers.run(path.join(__dirname, '../generators/app'))
-          .withOptions({skipInstall: true, skipChecks: true})
-          .inTmpDir((dir) => {
-            fse.copySync(path.join(__dirname, 'templates/monolith'), dir);
-            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
-          });
-      });
-
-      it('creates files', () => {
-        assert.file(generatedFiles.server);
-      });
-    });
-    describe('without constructor injection', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
           .withOptions({skipInstall: true, skipChecks: true})
@@ -279,35 +283,8 @@ describe('JHipster Elasticsearch Reindexer', () => {
         assert.file(generatedFiles.server);
       });
     });
+
     describe('without user management', () => {
-      beforeAll(() => {
-        return helpers.run(path.join(__dirname, '../generators/app'))
-          .withOptions({skipInstall: true, skipChecks: true})
-          .inTmpDir((dir) => {
-            fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
-            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
-          });
-      });
-
-      it('creates files', () => {
-        assert.file(generatedFiles.server);
-      });
-    });
-    describe('with constructor injection', () => {
-      beforeAll(() => {
-        return helpers.run(path.join(__dirname, '../generators/app'))
-          .withOptions({skipInstall: true, skipChecks: true})
-          .inTmpDir((dir) => {
-            fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
-            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
-          });
-      });
-
-      it('creates files', () => {
-        assert.file(generatedFiles.server);
-      });
-    });
-    describe('without constructor injection', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
           .withOptions({skipInstall: true, skipChecks: true})
@@ -324,28 +301,17 @@ describe('JHipster Elasticsearch Reindexer', () => {
   });
 
   describe('Microservice', () => {
-    it('creates files', () => {
-      assert.file(generatedFiles.server);
-    });
-  });
-
-  describe('Server-only app', () => {
     beforeAll(() => {
       return helpers.run(path.join(__dirname, '../generators/app'))
+        .withOptions({skipInstall: true, skipChecks: true})
         .inTmpDir((dir) => {
-          fse.copySync(path.join(__dirname, 'templates/server-only'), dir);
+          fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
           fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
         });
     });
 
-    it('creates server files', () => {
+    it('creates files', () => {
       assert.file(generatedFiles.server);
-    });
-
-    it('skips creating client files', () => {
-      assert.noFile(generatedFiles.client.i18n);
-      assert.noFile(generatedFiles.client.ng1);
-      assert.noFile(generatedFiles.client.ngX);
     });
   });
 
@@ -362,6 +328,12 @@ describe('JHipster Elasticsearch Reindexer', () => {
 
     it('creates files', () => {
       assert.file(generatedFiles.server);
+    });
+
+    it('does not use tabs anywhere', () => {
+      generatedFiles.server.forEach((filePath) => {
+        assert.noFileContent(filePath, '\t');
+      });
     });
 
     it('resource does not import Inject annotation', () => {
@@ -414,6 +386,12 @@ describe('JHipster Elasticsearch Reindexer', () => {
       assert.file(generatedFiles.server);
     });
 
+    it('does not use tabs anywhere', () => {
+      generatedFiles.server.forEach((filePath) => {
+        assert.noFileContent(filePath, '\t');
+      });
+    });
+
     it('resource imports Inject annotation', () => {
       assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import javax.inject.Inject;');
     });
@@ -438,6 +416,26 @@ describe('JHipster Elasticsearch Reindexer', () => {
 
     it('service does not have constructor', () => {
       assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'ElasticsearchIndexService(');
+    });
+  });
+
+  describe('Server-only app', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/server-only'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('creates server files', () => {
+      assert.file(generatedFiles.server);
+    });
+
+    it('skips creating client files', () => {
+      assert.noFile(generatedFiles.client.i18n);
+      assert.noFile(generatedFiles.client.ng1);
+      assert.noFile(generatedFiles.client.ngX);
     });
   });
 
