@@ -37,7 +37,7 @@ public class ElasticsearchIndexService {
 
     <%_     });
         }
-        if (applicationType === 'monolith' || applicationType === 'gateway') { _%>
+        if (!skipUserManagement && (applicationType === 'monolith' || applicationType === 'gateway')) { _%>
     private final UserRepository userRepository;
 
     private final UserSearchRepository userSearchRepository;
@@ -46,7 +46,7 @@ public class ElasticsearchIndexService {
     private final ElasticsearchTemplate elasticsearchTemplate;
 
     public ElasticsearchIndexService(
-        <%_ if (applicationType === 'monolith' || applicationType === 'gateway') { _%>
+        <%_ if (!skipUserManagement && (applicationType === 'monolith' || applicationType === 'gateway')) { _%>
         UserRepository userRepository,
         UserSearchRepository userSearchRepository,
         <%_ } _%>
@@ -60,8 +60,10 @@ public class ElasticsearchIndexService {
             });
         } _%>
         ElasticsearchTemplate elasticsearchTemplate) {
+        <%_ if (!skipUserManagement && (applicationType === 'monolith' || applicationType === 'gateway')) { _%>
         this.userRepository = userRepository;
         this.userSearchRepository = userSearchRepository;
+        <%_ } _%>
         <%_ if (applicationType === 'monolith' || applicationType === 'microservice') {
             entityFiles.forEach(function (file) {
                 var entity = file.split('.json')[0];
@@ -86,7 +88,7 @@ public class ElasticsearchIndexService {
 
     <%_     });
     }
-    if (applicationType === 'monolith' || applicationType === 'gateway') { _%>
+    if (!skipUserManagement && (applicationType === 'monolith' || applicationType === 'gateway')) { _%>
     @Inject
     private UserRepository userRepository;
 
@@ -108,7 +110,7 @@ public class ElasticsearchIndexService {
         reindexForClass(<%=entity%>.class, <%=entityLowerCase%>Repository, <%=entityLowerCase%>SearchRepository);
         <%_     });
             }
-            if (!applicationType || applicationType === 'monolith' || applicationType === 'gateway') { _%>
+            if (!skipUserManagement && (!applicationType || applicationType === 'monolith' || applicationType === 'gateway')) { _%>
         reindexForClass(User.class, userRepository, userSearchRepository);
         <%_ } _%>
 

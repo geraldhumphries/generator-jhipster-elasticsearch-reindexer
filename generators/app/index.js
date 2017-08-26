@@ -56,6 +56,7 @@ module.exports = JhipsterGenerator.extend({
       this.skipClient = config.skipClient;
       this.skipServer = config.skipServer;
       this.jhipsterVersion = config.jhipsterVersion;
+      this.skipUserManagement = config.skipUserManagement;
 
       // set the major version to 2 if it isn't specified
       if (!this.jhipsterVersion) {
@@ -141,6 +142,9 @@ module.exports = JhipsterGenerator.extend({
       if (this.enableTranslation && !this.languages) {
         this.log(chalk.yellow('WARNING enableTranslations is true but languages is missing in JHipster configuration, using \'en, fr\' as fallback'));
         this.languages = ['en', 'fr'];
+      }
+      if (!this.skipUserManagement) {
+        this.skipUserManagement = false;
       }
     },
     writeTemplates: function () {
