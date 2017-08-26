@@ -6,6 +6,8 @@ const fse = require('fs-extra');
 
 const JAVA_PATH = 'src/main/java/com/mycompany/myapp/';
 const WEBAPP_PATH = 'src/main/webapp/';
+const JHV2_APP_PATH = 'scripts/app/admin/elasticsearch-reindex/';
+const JHV2_SERVICE_PATH = 'scripts/components/admin/';
 
 const generatedFiles = {
   client: {
@@ -16,6 +18,14 @@ const generatedFiles = {
       WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.state.js',
       WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.controller.js',
       WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.html',
+    ],
+    jhv2: [
+      WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex.controller.js',
+      WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex.html',
+      WEBAPP_PATH + JHV2_SERVICE_PATH + 'elasticsearch-reindex.service.js',
+      WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex.js',
+      WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex-dialog.controller.js',
+      WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex-dialog.html',
     ],
     ngX: [
       WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.component.html',
@@ -41,8 +51,20 @@ const generatedFiles = {
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('JHipster Elasticsearch Reindexer', () => {
-
   describe('AngularJS 1 app', () => {
+    describe('before JHipster version 3', () => {
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withOptions({skipInstall: true, skipChecks: true})
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/jhv2'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
+      });
+      it('creates AngularJS 1 files', () => {
+        assert.file(generatedFiles.client.jhv2);
+      });
+    });
     describe('without i18n', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
