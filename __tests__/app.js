@@ -61,8 +61,55 @@ describe('JHipster Elasticsearch Reindexer', () => {
             fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
           });
       });
-      it('creates AngularJS 1 files', () => {
+
+      it('creates AngularJS 1 files for JHipster V2', () => {
         assert.file(generatedFiles.client.jhv2);
+      });
+
+      it('uses jh-alert directive', () => {
+        assert.fileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex.html', '<jh-alert></jh-alert>');
+      });
+
+      it('uses jh-alert-error directive', () => {
+        assert.fileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex-dialog.html', '<jh-alert-error></jh-alert-error>');
+      });
+
+      it('does not use uses jhi-alert directive', () => {
+        assert.noFileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex.html', '<jhi-alert></jhi-alert>');
+      });
+
+      it('does not use jhi-alert-error directive', () => {
+        assert.noFileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex-dialog.html', '<jhi-alert-error></jhi-alert-error>');
+      });
+    });
+    describe('after JHipster version 3', () => {
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withOptions({skipInstall: true, skipChecks: true})
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/jhv3'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
+      });
+
+      it('creates AngularJS 1 files', () => {
+        assert.file(generatedFiles.client.ng1);
+      });
+
+      it('uses jhi-alert directive', () => {
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.html', '<jhi-alert></jhi-alert>');
+      });
+
+      it('uses jhi-alert-error directive', () => {
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.html', '<jhi-alert-error></jhi-alert-error>');
+      });
+
+      it('does not use uses jh-alert directive', () => {
+        assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.html', '<jh-alert></jh-alert>');
+      });
+
+      it('does not use jh-alert-error directive', () => {
+        assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.html', '<jh-alert-error></jh-alert-error>');
       });
     });
     describe('without i18n', () => {
