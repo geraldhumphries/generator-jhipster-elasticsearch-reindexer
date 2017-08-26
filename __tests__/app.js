@@ -250,6 +250,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
       it('creates files', () => {
         assert.file(generatedFiles.server);
       });
+
+      it('generates entity reindexing', () => {
+        assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(Test.class, testRepository, testSearchRepository);');
+      });
+
+      it('generates user reindexing', () => {
+        assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(User.class, userRepository, userSearchRepository);');
+      });
     });
 
     describe('without user management', () => {
@@ -257,13 +265,21 @@ describe('JHipster Elasticsearch Reindexer', () => {
         return helpers.run(path.join(__dirname, '../generators/app'))
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
-            fse.copySync(path.join(__dirname, 'templates/monolith'), dir);
+            fse.copySync(path.join(__dirname, 'templates/monolith-skipusermanagement'), dir);
             fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
           });
       });
 
       it('creates files', () => {
         assert.file(generatedFiles.server);
+      });
+
+      it('generates entity reindexing', () => {
+        assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(Test.class, testRepository, testSearchRepository);');
+      });
+
+      it('does not generate user reindexing', () => {
+        assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(User.class, userRepository, userSearchRepository);');
       });
     });
   });
@@ -282,6 +298,14 @@ describe('JHipster Elasticsearch Reindexer', () => {
       it('creates files', () => {
         assert.file(generatedFiles.server);
       });
+
+      it('does not generate entity reindexing', () => {
+        assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(Test.class, testRepository, testSearchRepository);');
+      });
+
+      it('generates user reindexing', () => {
+        assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(User.class, userRepository, userSearchRepository);');
+      });
     });
 
     describe('without user management', () => {
@@ -289,7 +313,7 @@ describe('JHipster Elasticsearch Reindexer', () => {
         return helpers.run(path.join(__dirname, '../generators/app'))
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
-            fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
+            fse.copySync(path.join(__dirname, 'templates/gateway-skipusermanagement'), dir);
             fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
           });
       });
@@ -297,21 +321,62 @@ describe('JHipster Elasticsearch Reindexer', () => {
       it('creates files', () => {
         assert.file(generatedFiles.server);
       });
+
+      it('does not generate entity reindexing', () => {
+        assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(Test.class, testRepository, testSearchRepository);');
+      });
+
+      it('does not generate user reindexing', () => {
+        assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(User.class, userRepository, userSearchRepository);');
+      });
     });
   });
 
   describe('Microservice', () => {
-    beforeAll(() => {
-      return helpers.run(path.join(__dirname, '../generators/app'))
-        .withOptions({skipInstall: true, skipChecks: true})
-        .inTmpDir((dir) => {
-          fse.copySync(path.join(__dirname, 'templates/gateway'), dir);
-          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
-        });
+    describe('with user management', () => {
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withOptions({skipInstall: true, skipChecks: true})
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/microservice'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
+      });
+
+      it('creates files', () => {
+        assert.file(generatedFiles.server);
+      });
+
+      it('generates entity reindexing', () => {
+        assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(Test.class, testRepository, testSearchRepository);');
+      });
+
+      it('does not generate user reindexing', () => {
+        assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(User.class, userRepository, userSearchRepository);');
+      });
     });
 
-    it('creates files', () => {
-      assert.file(generatedFiles.server);
+    describe('without user management', () => {
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withOptions({skipInstall: true, skipChecks: true})
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/microservice-skipusermanagement'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
+      });
+
+      it('creates files', () => {
+        assert.file(generatedFiles.server);
+      });
+
+      it('generates entity reindexing', () => {
+        assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(Test.class, testRepository, testSearchRepository);');
+      });
+
+      it('does not generate user reindexing', () => {
+        assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(User.class, userRepository, userSearchRepository);');
+      });
     });
   });
 

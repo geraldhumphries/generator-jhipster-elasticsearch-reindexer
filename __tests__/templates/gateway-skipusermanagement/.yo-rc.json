@@ -4,27 +4,30 @@
     "baseName": "testApp",
     "packageName": "com.mycompany.myapp",
     "packageFolder": "com/mycompany/myapp",
-    "serverPort": "8081",
+    "serverPort": "8080",
     "authenticationType": "jwt",
     "hibernateCache": "hazelcast",
     "clusteredHttpSession": false,
     "websocket": false,
     "databaseType": "sql",
     "devDatabaseType": "h2Disk",
-    "prodDatabaseType": "postgresql",
+    "prodDatabaseType": "mysql",
     "searchEngine": false,
     "messageBroker": false,
     "serviceDiscoveryType": "eureka",
     "buildTool": "maven",
     "enableSocialSignIn": false,
-    "jwtSecretKey": "43638ca4b451044629e35e6841bba30c4eacc62f",
-    "enableTranslation": false,
-    "applicationType": "microservice",
+    "jwtSecretKey": "3a3f158dfe9fd36d08e26d5fcd55b36442b8ada9",
+    "useSass": false,
+    "applicationType": "gateway",
     "testFrameworks": [
-      "gatling"
+      "gatling",
+      "protractor"
     ],
     "jhiPrefix": "jhi",
-    "skipClient": true,
-    "clientPackageManager": "yarn"
+    "enableTranslation": false,
+    "clientFramework": "angular1",
+    "clientPackageManager": "yarn",
+    "skipUserManagement": true
   }
 }

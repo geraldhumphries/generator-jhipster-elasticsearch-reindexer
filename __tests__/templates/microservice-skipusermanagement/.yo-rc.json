@@ -25,6 +25,7 @@
     ],
     "jhiPrefix": "jhi",
     "skipClient": true,
+    "skipUserManagement": true,
     "clientPackageManager": "yarn"
   }
 }
