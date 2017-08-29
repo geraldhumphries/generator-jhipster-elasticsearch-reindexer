@@ -64,7 +64,10 @@ module.exports = JhipsterGenerator.extend({
       } else {
         this.jhipsterMajorVersion = config.jhipsterVersion[0];
       }
+
       this.requiresSetLocation = this.jhipsterVersion ? semver.lt(this.jhipsterVersion, '4.4.4') : false;
+      this.usePostMapping = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '3.10.0') : false;
+
       this.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
         return file.match(/\.json$/);
       });
@@ -83,7 +86,6 @@ module.exports = JhipsterGenerator.extend({
         this.appFolder = 'scripts/app/admin/elasticsearch-reindex/';
         this.serviceFolder = 'scripts/components/admin/';
       }
-
       jhipsterVar.javaDir = `${jhipsterConstants.SERVER_MAIN_SRC_DIR + this.packageFolder}/`;
       jhipsterVar.resourceDir = jhipsterConstants.SERVER_MAIN_RES_DIR;
       jhipsterVar.webappDir = jhipsterConstants.CLIENT_MAIN_SRC_DIR;

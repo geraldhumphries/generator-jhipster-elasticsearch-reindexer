@@ -436,6 +436,64 @@ describe('JHipster Elasticsearch Reindexer', () => {
     });
   });
 
+  describe('App with PostMapping', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .withOptions({skipInstall: true, skipChecks: true})
+        .inTmpDir((dir) => {
+          // JHipster version >= 3.10.0
+          fse.copySync(path.join(__dirname, 'templates/postmapping'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('imports PostMapping', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import org.springframework.web.bind.annotation.PostMapping;');
+    });
+
+    it('does not import RequestMethod or MediaType', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import org.springframework.http.MediaType;');
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import org.springframework.web.bind.annotation.RequestMethod;');
+    });
+
+    it('uses PostMapping', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', '@PostMapping("/elasticsearch/index")');
+    });
+
+    it('does not use RequestMapping', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', '@RequestMapping(value = "/elasticsearch/index",');
+    });
+  });
+
+  describe('App with RequestMapping', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .withOptions({skipInstall: true, skipChecks: true})
+        .inTmpDir((dir) => {
+          // JHipster version < 3.10.0
+          fse.copySync(path.join(__dirname, 'templates/requestmapping'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('does not import PostMapping', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import org.springframework.web.bind.annotation.PostMapping;');
+    });
+
+    it('imports RequestMethod and MediaType', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import org.springframework.http.MediaType;');
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import org.springframework.web.bind.annotation.RequestMethod;');
+    });
+
+    it('does not use PostMapping', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', '@PostMapping("/elasticsearch/index")');
+    });
+
+    it('uses RequestMapping', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', '@RequestMapping(value = "/elasticsearch/index",');
+    });
+  });
+
   describe('App with field injection', () => {
     beforeAll(() => {
       return helpers.run(path.join(__dirname, '../generators/app'))
