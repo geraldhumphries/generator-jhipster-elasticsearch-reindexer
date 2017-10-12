@@ -1,6 +1,6 @@
 'use strict';
 var util = require('util');
-var generator = require('yeoman-generator');
+var yeomanGenerator = require('yeoman-generator');
 var chalk = require('chalk');
 var packagejs = require(__dirname + '/../../package.json');
 var shelljs = require('shelljs');
@@ -19,21 +19,13 @@ try {
   };
 }
 
-var JhipsterGenerator;
-
-if (generator.extend) {
-  JhipsterGenerator = generator.extend({});
-} else {
-  JhipsterGenerator = generator.Base.extend({});
-}
-
-util.inherits(JhipsterGenerator, BaseGenerator);
-
 // Stores JHipster variables
 var jhipsterVar = {moduleName: 'elasticsearch-reindexer'};
 jhipsterVar.jhipsterConfigDirectory = '.jhipster';
 
-module.exports = JhipsterGenerator.extend({
+var JhipsterGenerator;
+
+var functions = {
   initializing: {
     displayLogo: function () {
       // Have Yeoman greet the user.
@@ -237,4 +229,52 @@ module.exports = JhipsterGenerator.extend({
   end: function () {
     this.log('End of elasticsearch-reindexer generator');
   }
-});
+};
+
+var generator;
+
+if (yeomanGenerator.extend || (yeomanGenerator.Base && yeomanGenerator.Base.extend)) {
+  if (yeomanGenerator.extend) {
+    JhipsterGenerator = yeomanGenerator.extend({});
+  } else {
+    JhipsterGenerator = yeomanGenerator.Base.extend({});
+  }
+
+  util.inherits(JhipsterGenerator, BaseGenerator);
+
+  generator = JhipsterGenerator.extend(functions);
+} else {
+  generator = class extends BaseGenerator {
+    get initializing() {
+      return {
+        displayLogo() {
+          return functions.initializing.displayLogo.bind(this)();
+        }
+      };
+    }
+
+    get writing() {
+      return {
+        setUpVars() {
+          return functions.writing.setUpVars.bind(this)();
+        },
+        validateVars() {
+          return functions.writing.validateVars.bind(this)();
+        },
+        writeTemplates() {
+          return functions.writing.writeTemplates.bind(this)();
+        },
+        registering() {
+          return functions.writing.registering.bind(this)();
+        },
+      };
+    }
+
+    end() {
+      return functions.end.bind(this)();
+    }
+  };
+}
+
+
+module.exports = generator;
