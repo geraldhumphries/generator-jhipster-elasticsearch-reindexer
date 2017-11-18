@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 public class ElasticsearchIndexService {
@@ -44,6 +46,8 @@ public class ElasticsearchIndexService {
 
     <%_ } _%>
     private final ElasticsearchTemplate elasticsearchTemplate;
+
+    private static final Lock reindexLock = new ReentrantLock();
 
     public ElasticsearchIndexService(
         <%_ if (!skipUserManagement && (applicationType === 'monolith' || applicationType === 'gateway')) { _%>
@@ -103,18 +107,26 @@ public class ElasticsearchIndexService {
     @Async
     @Timed
     public void reindexAll() {
+        if(reindexLock.tryLock()) {
+            try {
         <%_ if (!applicationType || applicationType === 'monolith' || applicationType === 'microservice') {
                 entityFiles.forEach(function (file) {
                     var entity = file.split('.json')[0];
                     var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
-        reindexForClass(<%=entity%>.class, <%=entityLowerCase%>Repository, <%=entityLowerCase%>SearchRepository);
+                reindexForClass(<%=entity%>.class, <%=entityLowerCase%>Repository, <%=entityLowerCase%>SearchRepository);
         <%_     });
             }
             if (!skipUserManagement && (!applicationType || applicationType === 'monolith' || applicationType === 'gateway')) { _%>
-        reindexForClass(User.class, userRepository, userSearchRepository);
+                reindexForClass(User.class, userRepository, userSearchRepository);
         <%_ } _%>
 
-        log.info("Elasticsearch: Successfully performed reindexing");
+                log.info("Elasticsearch: Successfully performed reindexing");
+            } finally {
+                reindexLock.unlock();
+            }
+        } else {
+            log.info("Elasticsearch: concurrent reindexing attempt");
+        }
     }
 
     @Transactional(readOnly = true)
@@ -136,6 +148,6 @@ public class ElasticsearchIndexService {
                 elasticsearchRepository.save(jpaRepository.findAll());
             }
         }
-        log.info("Elasticsearch: Indexed all rows for " + entityClass.getSimpleName());
+        log.info("Elasticsearch: Indexed all rows for {}", entityClass.getSimpleName());
     }
 }
