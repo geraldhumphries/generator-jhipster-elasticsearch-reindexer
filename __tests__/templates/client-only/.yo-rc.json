@@ -1,0 +1,20 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "baseName": "testApp",
+    "searchEngine": "no",
+    "useSass": false,
+    "enableTranslation": true,
+    "nativeLanguage": "en",
+    "languages": [
+      "en",
+      "fr"
+    ],
+    "enableSocialSignIn": false,
+    "skipServer": true,
+    "clientFramework": "angular1",
+    "clientPackageManager": "npm",
+    "jhipsterVersion": "4.5.6",
+    "jhiPrefix": "jhi"
+  }
+}

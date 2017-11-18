@@ -1,0 +1,33 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "baseName": "testApp",
+    "packageName": "com.mycompany.myapp",
+    "packageFolder": "com/mycompany/myapp",
+    "authenticationType": "session",
+    "hibernateCache": "ehcache",
+    "clusteredHttpSession": false,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "buildTool": "maven",
+    "enableSocialSignIn": false,
+    "rememberMeKey": "2bb60a80889aa6e6767e9ccd8714982681152aa5",
+    "testFrameworks": [
+      "gatling"
+    ],
+    "skipClient": true,
+    "jhipsterVersion": "4.5.6",
+    "serverPort": "8080",
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "enableTranslation": true,
+    "jhiPrefix": "jhi",
+    "clientPackageManager": "npm",
+    "languages": [
+      "fr"
+    ]
+  }
+}
