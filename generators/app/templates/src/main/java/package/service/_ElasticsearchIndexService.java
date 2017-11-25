@@ -7,6 +7,9 @@ import <%=packageName%>.repository.search.*;
 import org.elasticsearch.indices.IndexAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,11 +22,15 @@ import javax.inject.Inject;
 <%_ } _%>
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class ElasticsearchIndexService {
 
     private final Logger log = LoggerFactory.getLogger(ElasticsearchIndexService.class);
@@ -129,7 +136,6 @@ public class ElasticsearchIndexService {
         }
     }
 
-    @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     private <T, ID extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, ID> jpaRepository,
                                                               ElasticsearchRepository<T, ID> elasticsearchRepository) {
@@ -141,11 +147,30 @@ public class ElasticsearchIndexService {
         }
         elasticsearchTemplate.putMapping(entityClass);
         if (jpaRepository.count() > 0) {
-            try {
-                Method m = jpaRepository.getClass().getMethod("findAllWithEagerRelationships");
-                elasticsearchRepository.save((List<T>) m.invoke(jpaRepository));
-            } catch (Exception e) {
-                elasticsearchRepository.save(jpaRepository.findAll());
+            // set up a list of relationships that should be eagerly loaded.
+            // if a JHipster entity field is a Set, it is a relationship
+            List<Method> relationshipGetters = Arrays.stream(entityClass.getDeclaredMethods())
+                .filter(method -> method.getReturnType().equals(Set.class))
+                .collect(Collectors.toList());
+
+            int size = 100;
+            for (int i = 0; i <= jpaRepository.count() / size; i++) {
+                Pageable page = new PageRequest(i, size);
+                log.info("Indexing page : " + i + " , nr " + size);
+                Page<T> results = jpaRepository.findAll(page);
+                results.map(result -> {
+                    // if there are any relationships to load, do it now
+                    relationshipGetters.forEach(method -> {
+                        try {
+                            // eagerly load the relationship set
+                            ((Set) method.invoke(result)).size();
+                        } catch (Exception ex) {
+                            log.error(ex.getMessage());
+                        }
+                    });
+                    return result;
+                });
+                elasticsearchRepository.save(results);
             }
         }
         log.info("Elasticsearch: Indexed all rows for {}", entityClass.getSimpleName());
