@@ -1,6 +1,7 @@
 package <%=packageName%>.service;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import <%=packageName%>.domain.*;
 import <%=packageName%>.repository.*;
 import <%=packageName%>.repository.search.*;
@@ -20,10 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 <%_ if (jhipsterMajorVersion < 4) { _%>
 import javax.inject.Inject;
 <%_ } _%>
+import javax.persistence.ManyToMany;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -147,16 +152,28 @@ public class ElasticsearchIndexService {
         }
         elasticsearchTemplate.putMapping(entityClass);
         if (jpaRepository.count() > 0) {
-            // set up a list of relationships that should be eagerly loaded.
-            // if a JHipster entity field is a Set, it is a relationship
-            List<Method> relationshipGetters = Arrays.stream(entityClass.getDeclaredMethods())
-                .filter(method -> method.getReturnType().equals(Set.class))
-                .collect(Collectors.toList());
+          // if a JHipster entity field is the owner side of a many-to-many relationship, it should be loaded manually
+          List<Method> relationshipGetters = Arrays.stream(entityClass.getDeclaredFields())
+            .filter(field -> field.getType().equals(Set.class))
+            .filter(field -> field.getAnnotation(ManyToMany.class) != null)
+            .filter(field -> field.getAnnotation(ManyToMany.class).mappedBy().isEmpty())
+            .filter(field -> field.getAnnotation(JsonIgnore.class) == null)
+            .map(field -> {
+              try {
+                return new PropertyDescriptor(field.getName(), entityClass).getReadMethod();
+              } catch (IntrospectionException e) {
+                log.error("Error retrieving getter for class {}, field {}. Field will NOT be indexed",
+                  entityClass.getSimpleName(), field.getName(), e);
+                return null;
+              }
+            })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
 
-            int size = 100;
+          int size = 100;
             for (int i = 0; i <= jpaRepository.count() / size; i++) {
                 Pageable page = new PageRequest(i, size);
-                log.info("Indexing page : " + i + " , nr " + size);
+                log.info("Indexing page {} of {}, size {}", i, jpaRepository.count() / size, size);
                 Page<T> results = jpaRepository.findAll(page);
                 results.map(result -> {
                     // if there are any relationships to load, do it now
@@ -170,7 +187,7 @@ public class ElasticsearchIndexService {
                     });
                     return result;
                 });
-                elasticsearchRepository.save(results);
+                elasticsearchRepository.save(results.getContent());
             }
         }
         log.info("Elasticsearch: Indexed all rows for {}", entityClass.getSimpleName());
