@@ -152,25 +152,25 @@ public class ElasticsearchIndexService {
         }
         elasticsearchTemplate.putMapping(entityClass);
         if (jpaRepository.count() > 0) {
-          // if a JHipster entity field is the owner side of a many-to-many relationship, it should be loaded manually
-          List<Method> relationshipGetters = Arrays.stream(entityClass.getDeclaredFields())
-            .filter(field -> field.getType().equals(Set.class))
-            .filter(field -> field.getAnnotation(ManyToMany.class) != null)
-            .filter(field -> field.getAnnotation(ManyToMany.class).mappedBy().isEmpty())
-            .filter(field -> field.getAnnotation(JsonIgnore.class) == null)
-            .map(field -> {
-              try {
-                return new PropertyDescriptor(field.getName(), entityClass).getReadMethod();
-              } catch (IntrospectionException e) {
-                log.error("Error retrieving getter for class {}, field {}. Field will NOT be indexed",
-                  entityClass.getSimpleName(), field.getName(), e);
-                return null;
-              }
-            })
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+            // if a JHipster entity field is the owner side of a many-to-many relationship, it should be loaded manually
+            List<Method> relationshipGetters = Arrays.stream(entityClass.getDeclaredFields())
+                .filter(field -> field.getType().equals(Set.class))
+                .filter(field -> field.getAnnotation(ManyToMany.class) != null)
+                .filter(field -> field.getAnnotation(ManyToMany.class).mappedBy().isEmpty())
+                .filter(field -> field.getAnnotation(JsonIgnore.class) == null)
+                .map(field -> {
+                    try {
+                        return new PropertyDescriptor(field.getName(), entityClass).getReadMethod();
+                    } catch (IntrospectionException e) {
+                        log.error("Error retrieving getter for class {}, field {}. Field will NOT be indexed",
+                            entityClass.getSimpleName(), field.getName(), e);
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-          int size = 100;
+            int size = 100;
             for (int i = 0; i <= jpaRepository.count() / size; i++) {
                 Pageable page = new PageRequest(i, size);
                 log.info("Indexing page {} of {}, size {}", i, jpaRepository.count() / size, size);
