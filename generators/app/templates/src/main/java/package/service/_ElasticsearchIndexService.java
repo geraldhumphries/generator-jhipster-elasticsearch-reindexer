@@ -38,6 +38,8 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ElasticsearchIndexService {
 
+    private static final Lock reindexLock = new ReentrantLock();
+
     private final Logger log = LoggerFactory.getLogger(ElasticsearchIndexService.class);
 
 <%_ if (jhipsterMajorVersion >= 4) { _%>
@@ -58,8 +60,6 @@ public class ElasticsearchIndexService {
 
     <%_ } _%>
     private final ElasticsearchTemplate elasticsearchTemplate;
-
-    private static final Lock reindexLock = new ReentrantLock();
 
     public ElasticsearchIndexService(
         <%_ if (!skipUserManagement && (applicationType === 'monolith' || applicationType === 'gateway')) { _%>
@@ -119,7 +119,7 @@ public class ElasticsearchIndexService {
     @Async
     @Timed
     public void reindexAll() {
-        if(reindexLock.tryLock()) {
+        if (reindexLock.tryLock()) {
             try {
         <%_ if (!applicationType || applicationType === 'monolith' || applicationType === 'microservice') {
                 entityFiles.forEach(function (file) {
