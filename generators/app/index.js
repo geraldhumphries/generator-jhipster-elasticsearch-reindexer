@@ -252,8 +252,6 @@ if (yeomanGenerator.extend || (yeomanGenerator.Base && yeomanGenerator.Base.exte
     get initializing() {
       return {
         displayLogo() {
-          console.log('class extends BaseGenerator');
-          console.log(this);
           return functions.initializing.displayLogo.bind(this)();
         }
       };
