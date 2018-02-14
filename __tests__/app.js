@@ -81,6 +81,13 @@ describe('JHipster Elasticsearch Reindexer', () => {
       it('does not use jhi-alert-error directive', () => {
         assert.noFileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex-dialog.html', '<jhi-alert-error></jhi-alert-error>');
       });
+
+      it('adds App suffix to AngularJS module name', () => {
+        assert.fileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex.js', '.module(\'testApp\')');
+        assert.fileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex.controller.js', '.module(\'testApp\')');
+        assert.fileContent(WEBAPP_PATH + JHV2_SERVICE_PATH + 'elasticsearch-reindex.service.js', '.module(\'testApp\')');
+        assert.fileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex-dialog.controller.js', '.module(\'testApp\')');
+      });
     });
 
     describe('after JHipster version 3', () => {
@@ -107,6 +114,13 @@ describe('JHipster Elasticsearch Reindexer', () => {
 
       it('does not use jh-alert-error directive', () => {
         assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.html', '<jh-alert-error></jh-alert-error>');
+      });
+
+      it('adds App suffix to AngularJS module name', () => {
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.state.js', '.module(\'testApp\')');
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.controller.js', '.module(\'testApp\')');
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.js', '.module(\'testApp\')');
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.controller.js', '.module(\'testApp\')');
       });
     });
 

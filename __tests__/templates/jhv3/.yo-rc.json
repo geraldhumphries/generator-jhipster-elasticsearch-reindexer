@@ -5,7 +5,7 @@
       "nativeLanguage": "en"
     },
     "jhipsterVersion": "3.0.0",
-    "baseName": "testApp",
+    "baseName": "test",
     "packageName": "com.mycompany.myapp",
     "packageFolder": "com/mycompany/myapp",
     "serverPort": "8080",

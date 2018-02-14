@@ -118,7 +118,8 @@ var functions = {
         this.nativeLanguage = 'en';
       }
       if (!this.clientFramework) {
-        this.log(chalk.yellow('WARNING clientFramework is missing in JHipster configuration, using angular1 as fallback'));
+        this.log(chalk.yellow('WARNING clientFramework is missing in JHipster configuration, ' +
+          'using angular1 as fallback'));
         this.clientFramework = 'angular1';
       }
       // for backwards compatibility
@@ -126,15 +127,18 @@ var functions = {
         this.clientFramework = 'angularX';
       }
       if (this.clientFramework === 'angularX' && !this.angularXAppName) {
-        this.log(chalk.yellow('WARNING angularXAppName/angular2AppName is missing in JHipster configuration, using baseName as fallback'));
-        this.angularXAppName = this.baseName;
+        this.log(chalk.yellow('WARNING angularXAppName/angular2AppName is missing in JHipster configuration, ' +
+          'using baseName + \'App\' as fallback'));
+        this.angularXAppName = this.baseName.endsWith('App') ? this.baseName : this.baseName + 'App';
       }
       if (this.clientFramework === 'angular1' && !this.angularAppName) {
-        this.log(chalk.yellow('WARNING angularAppName is missing in JHipster configuration, using baseName as fallback'));
-        this.angularAppName = this.baseName;
+        this.log(chalk.yellow('WARNING angularAppName is missing in JHipster configuration, ' +
+          'using baseName + \'App\' as fallback'));
+        this.angularAppName = this.baseName.endsWith('App') ? this.baseName : this.baseName + 'App';
       }
       if (this.enableTranslation && !this.languages) {
-        this.log(chalk.yellow('WARNING enableTranslations is true but languages is missing in JHipster configuration, using \'en, fr\' as fallback'));
+        this.log(chalk.yellow('WARNING enableTranslations is true but languages is missing in JHipster configuration, ' +
+          'using \'en, fr\' as fallback'));
         this.languages = ['en', 'fr'];
       }
       if (!this.skipUserManagement) {
@@ -248,6 +252,8 @@ if (yeomanGenerator.extend || (yeomanGenerator.Base && yeomanGenerator.Base.exte
     get initializing() {
       return {
         displayLogo() {
+          console.log('class extends BaseGenerator');
+          console.log(this);
           return functions.initializing.displayLogo.bind(this)();
         }
       };
