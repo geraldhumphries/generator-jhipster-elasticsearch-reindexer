@@ -57,6 +57,7 @@ var functions = {
         this.jhipsterMajorVersion = config.jhipsterVersion[0];
       }
 
+      this.useCommonHttpApi = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '4.14.0') : false;
       this.requiresSetLocation = this.jhipsterVersion ? semver.lt(this.jhipsterVersion, '4.4.4') : false;
       this.usePostMapping = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '3.10.0') : false;
 

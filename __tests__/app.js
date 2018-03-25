@@ -187,7 +187,7 @@ describe('JHipster Elasticsearch Reindexer', () => {
     });
   });
 
-  describe('Angular 2+ app', () => {
+  describe('Angular 2-4 app', () => {
     describe('without i18n', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
@@ -214,6 +214,11 @@ describe('JHipster Elasticsearch Reindexer', () => {
         generatedFiles.client.ngX.forEach((filePath) => {
           assert.noFileContent(filePath, '\t');
         });
+      });
+
+      it('uses the @angular/http API', () => {
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
+          'from \'@angular/http\'');
       });
     });
 
@@ -246,6 +251,41 @@ describe('JHipster Elasticsearch Reindexer', () => {
         generatedFiles.client.i18n.forEach((filePath) => {
           assert.noFileContent(filePath, '\t');
         });
+      });
+
+      it('uses the @angular/http API', () => {
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
+          'from \'@angular/http\'');
+      });
+    });
+  });
+
+  describe('Angular 5 app', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .withOptions({skipInstall: true, skipChecks: true})
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/ng5'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('creates Angular 2+ files', () => {
+      assert.file(generatedFiles.client.ngX);
+    });
+
+    it('skips creating AngularJS 1 files', () => {
+      assert.noFile(generatedFiles.client.ng1);
+    });
+
+    it('uses the @angular/common/http API', () => {
+      assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
+        'from \'@angular/common/http\'');
+    });
+
+    it('does not use tabs anywhere', () => {
+      generatedFiles.client.ngX.forEach((filePath) => {
+        assert.noFileContent(filePath, '\t');
       });
     });
   });
