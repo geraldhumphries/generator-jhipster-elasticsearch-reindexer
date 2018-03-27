@@ -384,6 +384,29 @@ describe('JHipster Elasticsearch Reindexer', () => {
         assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(User.class, userRepository, userSearchRepository);');
       });
     });
+
+    describe('with UAA auth type', () => {
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withOptions({skipInstall: true, skipChecks: true})
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/gateway-uaa'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
+      });
+
+      it('creates files', () => {
+        assert.file(generatedFiles.server);
+      });
+
+      it('does not generate entity reindexing', () => {
+        assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(Test.class, testRepository, testSearchRepository);');
+      });
+
+      it('does not generate user reindexing', () => {
+        assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(User.class, userRepository, userSearchRepository);');
+      });
+    });
   });
 
   describe('Microservice', () => {

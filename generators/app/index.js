@@ -50,6 +50,11 @@ var functions = {
       this.skipClient = config.skipClient;
       this.skipServer = config.skipServer;
       this.skipUserManagement = config.skipUserManagement;
+      this.authenticationType = config.authenticationType;
+
+      if (this.authenticationType === 'uaa' && this.applicationType === 'gateway') {
+        this.skipUserManagement = true;
+      }
 
       this.jhipsterVersion = config.jhipsterVersion;
 
