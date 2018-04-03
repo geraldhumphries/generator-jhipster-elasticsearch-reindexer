@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 <%_ if (useCommonHttpApi) { _%>
-import { Http, Response } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 <%_ } else {_%>
 import { Http, Response } from '@angular/http';
 <%_ } %>
@@ -10,7 +10,11 @@ import { Observable } from 'rxjs/Rx';
 export class ElasticsearchReindexService {
 
     constructor(
-      private http: Http
+<%_ if (useCommonHttpApi) { _%>
+        private http: HttpClient
+<%_ } else {_%>
+        private http: Http
+<%_ } %>
     ) { }
 
 <%_ if (useCommonHttpApi) { _%>

@@ -218,7 +218,9 @@ describe('JHipster Elasticsearch Reindexer', () => {
 
       it('uses the @angular/http API', () => {
         assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
-          'from \'@angular/http\'');
+          'import { Http, Response } from \'@angular/http\'');
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
+          'private http: Http');
       });
     });
 
@@ -280,7 +282,9 @@ describe('JHipster Elasticsearch Reindexer', () => {
 
     it('uses the @angular/common/http API', () => {
       assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
-        'from \'@angular/common/http\'');
+        'import { HttpClient, HttpResponse } from \'@angular/common/http\'');
+      assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
+        'private http: HttpClient');
     });
 
     it('does not use tabs anywhere', () => {
