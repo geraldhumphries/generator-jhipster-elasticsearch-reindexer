@@ -13,7 +13,7 @@
         vm.entities = [
     <%_ if (applicationType === 'monolith' || applicationType === 'microservice') {
             entityFiles.forEach(function (file) {
-                var entity = file.split('.json')[0];
+                var entity = file.split('.json')[0]; _%>
                 <%=entity%>,
     <%_     });
         }
