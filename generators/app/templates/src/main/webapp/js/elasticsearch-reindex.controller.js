@@ -8,5 +8,31 @@
     ElasticsearchReindexController.$inject = [];
 
     function ElasticsearchReindexController() {
+        var vm = this;
+        vm.reindexType = 'all';
+        vm.entities = [
+    <%_ if (applicationType === 'monolith' || applicationType === 'microservice') {
+            entityFiles.forEach(function (file) {
+                var entity = file.split('.json')[0];
+                <%=entity%>,
+    <%_     });
+        }
+    _%>
+              ];
+        vm.checks = {};
+        vm.entities.forEach(
+                function(name) {
+                    vm.checks[name] = false;
+                }
+        );
+        vm.doReindex = doReindex;
+        function doReindex() {
+            if (vm.reindexType == 'all') {
+                $state.transitionTo('elasticsearch-reindex.dialog');
+            } else {
+                console.log('Not implemented yet');
+                alert('Not implemented yet');
+            }
+        }
     }
 })();
