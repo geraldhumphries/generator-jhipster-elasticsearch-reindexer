@@ -36,6 +36,9 @@ var functions = {
   writing: {
     setUpVars: function () {
       var config = getConfig(this);
+      var npmConfig = getNpmConfig();
+      var bowerConfig = getBowerConfig();
+
       this.applicationType = config.applicationType;
       this.nativeLanguage = config.nativeLanguage;
       this.languages = config.languages;
@@ -44,11 +47,26 @@ var functions = {
       this.baseName = config.baseName;
       this.packageName = config.packageName;
       this.packageFolder = config.packageFolder;
-      this.clientFramework = config.clientFramework;
       this.skipClient = config.skipClient;
       this.skipServer = config.skipServer;
-      this.jhipsterVersion = config.jhipsterVersion;
       this.skipUserManagement = config.skipUserManagement;
+      this.authenticationType = config.authenticationType;
+
+      if (this.authenticationType === 'uaa' && this.applicationType === 'gateway') {
+        this.skipUserManagement = true;
+      }
+
+      this.jhipsterVersion = config.jhipsterVersion;
+
+      this.angularVersion = '1.0.0';
+
+      if (npmConfig && npmConfig['dependencies'] && npmConfig['dependencies']['@angular/core']) {
+        this.angularVersion = npmConfig['dependencies']['@angular/core'];
+      } else if (bowerConfig && bowerConfig['dependencies'] && bowerConfig['dependencies']['angular']) {
+        this.angularVersion = bowerConfig['dependencies']['angular'];
+      }
+
+      this.clientFramework = semver.gte(this.angularVersion, '2.0.0') ? 'angularX' : 'angular1';
 
       // set the major version to 2 if it isn't specified
       if (!this.jhipsterVersion) {
@@ -57,6 +75,7 @@ var functions = {
         this.jhipsterMajorVersion = config.jhipsterVersion[0];
       }
 
+      this.useCommonHttpApi = semver.gte(this.angularVersion, '5.0.0');
       this.requiresSetLocation = this.jhipsterVersion ? semver.lt(this.jhipsterVersion, '4.4.4') : false;
       this.usePostMapping = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '3.10.0') : false;
 
@@ -97,6 +116,30 @@ var functions = {
         }
         return false;
       }
+
+      function getNpmConfig() {
+        var fromPath = 'package.json';
+
+        if (shelljs.test('-f', fromPath)) {
+          var fileData = fse.readJsonSync(fromPath);
+          if (fileData) {
+            return fileData;
+          }
+        }
+        return false;
+      }
+
+      function getBowerConfig() {
+        var fromPath = 'bower.json';
+
+        if (shelljs.test('-f', fromPath)) {
+          var fileData = fse.readJsonSync(fromPath);
+          if (fileData) {
+            return fileData;
+          }
+        }
+        return false;
+      }
     },
     validateVars: function () {
       if (!this.jhipsterVersion) {
@@ -118,23 +161,23 @@ var functions = {
         this.nativeLanguage = 'en';
       }
       if (!this.clientFramework) {
-        this.log(chalk.yellow('WARNING clientFramework is missing in JHipster configuration, using angular1 as fallback'));
+        this.log(chalk.yellow('WARNING clientFramework is missing in JHipster configuration, ' +
+          'using angular1 as fallback'));
         this.clientFramework = 'angular1';
       }
-      // for backwards compatibility
-      if (this.clientFramework === 'angular2') {
-        this.clientFramework = 'angularX';
-      }
       if (this.clientFramework === 'angularX' && !this.angularXAppName) {
-        this.log(chalk.yellow('WARNING angularXAppName/angular2AppName is missing in JHipster configuration, using baseName as fallback'));
-        this.angularXAppName = this.baseName;
+        this.log(chalk.yellow('WARNING angularXAppName/angular2AppName is missing in JHipster configuration, ' +
+          'using baseName + \'App\' as fallback'));
+        this.angularXAppName = this.baseName.endsWith('App') ? this.baseName : this.baseName + 'App';
       }
       if (this.clientFramework === 'angular1' && !this.angularAppName) {
-        this.log(chalk.yellow('WARNING angularAppName is missing in JHipster configuration, using baseName as fallback'));
-        this.angularAppName = this.baseName;
+        this.log(chalk.yellow('WARNING angularAppName is missing in JHipster configuration, ' +
+          'using baseName + \'App\' as fallback'));
+        this.angularAppName = this.baseName.endsWith('App') ? this.baseName : this.baseName + 'App';
       }
       if (this.enableTranslation && !this.languages) {
-        this.log(chalk.yellow('WARNING enableTranslations is true but languages is missing in JHipster configuration, using \'en, fr\' as fallback'));
+        this.log(chalk.yellow('WARNING enableTranslations is true but languages is missing in JHipster configuration, ' +
+          'using \'en, fr\' as fallback'));
         this.languages = ['en', 'fr'];
       }
       if (!this.skipUserManagement) {

@@ -81,6 +81,13 @@ describe('JHipster Elasticsearch Reindexer', () => {
       it('does not use jhi-alert-error directive', () => {
         assert.noFileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex-dialog.html', '<jhi-alert-error></jhi-alert-error>');
       });
+
+      it('adds App suffix to AngularJS module name', () => {
+        assert.fileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex.js', '.module(\'testApp\')');
+        assert.fileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex.controller.js', '.module(\'testApp\')');
+        assert.fileContent(WEBAPP_PATH + JHV2_SERVICE_PATH + 'elasticsearch-reindex.service.js', '.module(\'testApp\')');
+        assert.fileContent(WEBAPP_PATH + JHV2_APP_PATH + 'elasticsearch-reindex-dialog.controller.js', '.module(\'testApp\')');
+      });
     });
 
     describe('after JHipster version 3', () => {
@@ -107,6 +114,13 @@ describe('JHipster Elasticsearch Reindexer', () => {
 
       it('does not use jh-alert-error directive', () => {
         assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.html', '<jh-alert-error></jh-alert-error>');
+      });
+
+      it('adds App suffix to AngularJS module name', () => {
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.state.js', '.module(\'testApp\')');
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.controller.js', '.module(\'testApp\')');
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.js', '.module(\'testApp\')');
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.controller.js', '.module(\'testApp\')');
       });
     });
 
@@ -173,7 +187,7 @@ describe('JHipster Elasticsearch Reindexer', () => {
     });
   });
 
-  describe('Angular 2+ app', () => {
+  describe('Angular 2-4 app', () => {
     describe('without i18n', () => {
       beforeAll(() => {
         return helpers.run(path.join(__dirname, '../generators/app'))
@@ -200,6 +214,13 @@ describe('JHipster Elasticsearch Reindexer', () => {
         generatedFiles.client.ngX.forEach((filePath) => {
           assert.noFileContent(filePath, '\t');
         });
+      });
+
+      it('uses the @angular/http API', () => {
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
+          'import { Http, Response } from \'@angular/http\'');
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
+          'private http: Http');
       });
     });
 
@@ -232,6 +253,43 @@ describe('JHipster Elasticsearch Reindexer', () => {
         generatedFiles.client.i18n.forEach((filePath) => {
           assert.noFileContent(filePath, '\t');
         });
+      });
+
+      it('uses the @angular/http API', () => {
+        assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
+          'from \'@angular/http\'');
+      });
+    });
+  });
+
+  describe('Angular 5 app', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .withOptions({skipInstall: true, skipChecks: true})
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/ng5'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('creates Angular 2+ files', () => {
+      assert.file(generatedFiles.client.ngX);
+    });
+
+    it('skips creating AngularJS 1 files', () => {
+      assert.noFile(generatedFiles.client.ng1);
+    });
+
+    it('uses the @angular/common/http API', () => {
+      assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
+        'import { HttpClient, HttpResponse } from \'@angular/common/http\'');
+      assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.service.ts',
+        'private http: HttpClient');
+    });
+
+    it('does not use tabs anywhere', () => {
+      generatedFiles.client.ngX.forEach((filePath) => {
+        assert.noFileContent(filePath, '\t');
       });
     });
   });
@@ -314,6 +372,29 @@ describe('JHipster Elasticsearch Reindexer', () => {
           .withOptions({skipInstall: true, skipChecks: true})
           .inTmpDir((dir) => {
             fse.copySync(path.join(__dirname, 'templates/gateway-skipusermanagement'), dir);
+            fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+          });
+      });
+
+      it('creates files', () => {
+        assert.file(generatedFiles.server);
+      });
+
+      it('does not generate entity reindexing', () => {
+        assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(Test.class, testRepository, testSearchRepository);');
+      });
+
+      it('does not generate user reindexing', () => {
+        assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'reindexForClass(User.class, userRepository, userSearchRepository);');
+      });
+    });
+
+    describe('with UAA auth type', () => {
+      beforeAll(() => {
+        return helpers.run(path.join(__dirname, '../generators/app'))
+          .withOptions({skipInstall: true, skipChecks: true})
+          .inTmpDir((dir) => {
+            fse.copySync(path.join(__dirname, 'templates/gateway-uaa'), dir);
             fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
           });
       });
