@@ -5,9 +5,9 @@
         .module('<%=angularAppName%>')
         .controller('ElasticsearchReindexController', ElasticsearchReindexController);
 
-    ElasticsearchReindexController.$inject = [];
+    ElasticsearchReindexController.$inject = ['$state'];
 
-    function ElasticsearchReindexController() {
+    function ElasticsearchReindexController($state) {
         var vm = this;
         vm.reindexType = 'all';
         vm.entities = [
