@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.inject.Inject;
 <%_ } _%>
 import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * REST controller for managing Elasticsearch index.
@@ -65,4 +66,25 @@ public class ElasticsearchIndexResource {
             .headers(HeaderUtil.createAlert("elasticsearch.reindex.accepted", null))
             .build();
     }
+
+    /**
+     * POST  /elasticsearch/selected -> Reindex selected Elasticsearch documents
+     */
+      <%_ if (usePostMapping) { _%>
+    @PostMapping("/elasticsearch/selected")
+    <%_ } else { _%>
+    @RequestMapping(value = "/elasticsearch/selected",
+        method = RequestMethod.POST,
+        produces = MediaType.TEXT_PLAIN_VALUE)
+    <%_ } _%>
+    @Timed
+    @Secured(AuthoritiesConstants.ADMIN)
+    public ResponseEntity<Void> reindexSelected(List<String> selectedEntities) throws URISyntaxException {
+        log.info("REST request to reindex Elasticsearch by user : {}", SecurityUtils.getCurrentUserLogin());
+        elasticsearchIndexService.reindexSelected(selectedEntities);
+        return ResponseEntity.accepted()
+            .headers(HeaderUtil.createAlert("elasticsearch.reindex.accepted", null))
+            .build();
+    }
+
 }
