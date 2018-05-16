@@ -174,6 +174,7 @@ public class ElasticsearchIndexService {
     @SuppressWarnings("unchecked")
     private <T, ID extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, ID> jpaRepository,
                                                               ElasticsearchRepository<T, ID> elasticsearchRepository) {
+        String className = entityClass.getSimpleName();
         elasticsearchTemplate.deleteIndex(entityClass);
         try {
             elasticsearchTemplate.createIndex(entityClass);
@@ -193,7 +194,7 @@ public class ElasticsearchIndexService {
                         return new PropertyDescriptor(field.getName(), entityClass).getReadMethod();
                     } catch (IntrospectionException e) {
                         log.error("Error retrieving getter for class {}, field {}. Field will NOT be indexed",
-                            entityClass.getSimpleName(), field.getName(), e);
+                            className, field.getName(), e);
                         return null;
                     }
                 })
@@ -207,7 +208,7 @@ public class ElasticsearchIndexService {
             <%_ } else if (jhipsterMajorVersion > 4) { _%>
                 Pageable page = PageRequest.of(i, size);
             <%_ } _%>
-                log.info("Indexing page {} of {}, size {}", i, jpaRepository.count() / size, size);
+                log.info("Indexing {} page {} of {}, size {}", className, i, jpaRepository.count() / size, size);
                 Page<T> results = jpaRepository.findAll(page);
                 results.map(result -> {
                     // if there are any relationships to load, do it now
@@ -224,6 +225,6 @@ public class ElasticsearchIndexService {
                 elasticsearchRepository.save(results.getContent());
             }
         }
-        log.info("Elasticsearch: Indexed all rows for {}", entityClass.getSimpleName());
+        log.info("Elasticsearch: Indexed all rows for {}", className);
     }
 }
