@@ -71,15 +71,15 @@ public class ElasticsearchIndexResource {
      * POST  /elasticsearch/selected -> Reindex selected Elasticsearch documents
      */
     <%_ if (usePostMapping) { _%>
-    @PostMapping("/elasticsearch/selected")
+    @PostMapping("/elasticsearch/selected/{selectedEntities}")
     <%_ } else { _%>
-    @RequestMapping(value = "/elasticsearch/selected",
+    @RequestMapping(value = "/elasticsearch/selected/{selectedEntities}",
         method = RequestMethod.POST,
         produces = MediaType.TEXT_PLAIN_VALUE)
     <%_ } _%>
     @Timed
     @Secured(AuthoritiesConstants.ADMIN)
-    public ResponseEntity<Void> reindexSelected(List<String> selectedEntities) throws URISyntaxException {
+    public ResponseEntity<Void> reindexSelected(@PathVariable List<String> selectedEntities) throws URISyntaxException {
         log.info("REST request to reindex Elasticsearch by user : {}", SecurityUtils.getCurrentUserLogin());
         elasticsearchIndexService.reindexSelected(selectedEntities);
         return ResponseEntity.accepted()
