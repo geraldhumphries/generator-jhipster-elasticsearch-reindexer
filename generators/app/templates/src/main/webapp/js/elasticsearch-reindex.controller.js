@@ -15,6 +15,7 @@
             entityFiles.forEach(function (file) {
                 var entity = file.split('.json')[0]; _%>
                 '<%=entity%>',
+                'User'
     <%_     });
         }
     _%>
