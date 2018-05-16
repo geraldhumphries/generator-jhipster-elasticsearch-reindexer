@@ -9,7 +9,18 @@
     <p<% if (enableTranslation) { %> data-translate="elasticsearch.reindex.instructions2"<% } %>>
         This can take a long time and is susceptible to concurrency issues so it should be performed when the number of
         users is low.</p>
-    <button type="button" class="btn btn-primary pull-right" ui-sref="elasticsearch-reindex.dialog">
+    <select class="form-control selectpicker" ng-model="vm.reindexType">
+        <option value="all" >All</option>
+        <option value="selected" >Selected</option>
+    </select>
+    <div ng-show="vm.reindexType != 'all'" ng-repeat="entityName in vm.entities">
+        <label  class="checkbox-inline">
+            <input name="{{ entityName }}" ng-model="vm.checks[entityName]" type="checkbox">
+            {{ entityName }}
+        </label>
+    </div>
+    <br/>
+    <button type="button" class="btn btn-primary pull-right" ng-click="vm.doReindex()">
         <span class="glyphicon glyphicon-exclamation-sign"></span>
         <span<% if (enableTranslation) { %> data-translate="elasticsearch.reindex.go"<% } %>>
             Go
