@@ -16,9 +16,9 @@
                 var entity = file.split('.json')[0]; _%>
                 '<%=entity%>',
     <%_     });
-                'User'
         }
     _%>
+                'User'
               ];
         vm.checks = {};
         vm.entities.forEach(
