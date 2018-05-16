@@ -36,7 +36,7 @@ export class ElasticsearchReindexComponent {
         }
     _%>
                 'User'
-        ];        
+        ];
     }
 
     doReindex() {
