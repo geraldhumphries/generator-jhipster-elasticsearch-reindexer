@@ -70,7 +70,7 @@ public class ElasticsearchIndexResource {
     /**
      * POST  /elasticsearch/selected -> Reindex selected Elasticsearch documents
      */
-      <%_ if (usePostMapping) { _%>
+    <%_ if (usePostMapping) { _%>
     @PostMapping("/elasticsearch/selected")
     <%_ } else { _%>
     @RequestMapping(value = "/elasticsearch/selected",
