@@ -187,8 +187,6 @@ public class ElasticsearchIndexService {
         <%_ } else { _%>
         } catch (IndexAlreadyExistsException e) {
         <%_ } _%>
-
-        } catch (IndexAlreadyExistsException e) {
             // Do nothing. Index was already concurrently recreated by some other service.
         }
         elasticsearchTemplate.putMapping(entityClass);
