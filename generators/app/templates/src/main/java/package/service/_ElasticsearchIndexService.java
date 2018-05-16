@@ -232,7 +232,11 @@ public class ElasticsearchIndexService {
                     });
                     return result;
                 });
+                <%_ if (jhipsterMajorVersion > 4) { _%>
+                elasticsearchRepository.saveAll(results.getContent());
+                <%_ } else { _%>
                 elasticsearchRepository.save(results.getContent());
+                <%_ } _%>
             }
         }
         log.info("Elasticsearch: Indexed all rows for {}", className);
