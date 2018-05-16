@@ -28,7 +28,7 @@
                     function () {
                         $uibModalInstance.close(true);
                     }
-            });
+            );
         }
     }
 })();
