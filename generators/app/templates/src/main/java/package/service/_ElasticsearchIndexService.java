@@ -131,7 +131,9 @@ public class ElasticsearchIndexService {
         <%_     });
             }
             if (!skipUserManagement && (!applicationType || applicationType === 'monolith' || applicationType === 'gateway')) { _%>
-                reindexForClass(User.class, userRepository, userSearchRepository);
+                if (classesForReindex.contains("User")) {
+                    reindexForClass(User.class, userRepository, userSearchRepository);
+                }
         <%_ } _%>
 
                 log.info("Elasticsearch: Successfully performed reindexing");
