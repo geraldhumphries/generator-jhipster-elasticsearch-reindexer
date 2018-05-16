@@ -31,8 +31,10 @@
             if (vm.reindexType == 'all') {
                 $state.transitionTo('elasticsearch-reindex.dialog');
             } else {
-                console.log('Not implemented yet');
-                alert('Not implemented yet');
+                var reindexList = vm.entities.filter(function (name) {
+                    return vm.checks[name];
+                });
+                $state.transitionTo('elasticsearch-reindex.selected-dialog', {entities: reindexList});
             }
         }
     }
