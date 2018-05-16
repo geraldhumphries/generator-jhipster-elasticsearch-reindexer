@@ -12,10 +12,10 @@ import org.springframework.http.MediaType;
 <%_ } _%>
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
 <%_ if (usePostMapping) { _%>
 import org.springframework.web.bind.annotation.PostMapping;
 <%_ } _%>
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 <%_ if (!usePostMapping) { _%>
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -64,7 +64,7 @@ public class ElasticsearchIndexResource {
         log.info("REST request to reindex Elasticsearch by user : {}", SecurityUtils.getCurrentUserLogin());
         elasticsearchIndexService.reindexAll();
         return ResponseEntity.accepted()
-            .headers(HeaderUtil.createAlert("elasticsearch.reindex.accepted", null))
+            .headers(HeaderUtil.createAlert("elasticsearch.reindex.accepted", ""))
             .build();
     }
 
@@ -72,19 +72,19 @@ public class ElasticsearchIndexResource {
      * POST  /elasticsearch/selected -> Reindex selected Elasticsearch documents
      */
     <%_ if (usePostMapping) { _%>
-    @PostMapping("/elasticsearch/selected/{selectedEntities}")
+    @PostMapping("/elasticsearch/selected")
     <%_ } else { _%>
-    @RequestMapping(value = "/elasticsearch/selected/{selectedEntities}",
+    @RequestMapping(value = "/elasticsearch/selected",
         method = RequestMethod.POST,
         produces = MediaType.TEXT_PLAIN_VALUE)
     <%_ } _%>
     @Timed
     @Secured(AuthoritiesConstants.ADMIN)
-    public ResponseEntity<Void> reindexSelected(@PathVariable List<String> selectedEntities) throws URISyntaxException {
+    public ResponseEntity<Void> reindexSelected(@RequestBody List<String> selectedEntities) throws URISyntaxException {
         log.info("REST request to reindex Elasticsearch by user : {}", SecurityUtils.getCurrentUserLogin());
         elasticsearchIndexService.reindexSelected(selectedEntities);
         return ResponseEntity.accepted()
-            .headers(HeaderUtil.createAlert("elasticsearch.reindex.accepted", null))
+            .headers(HeaderUtil.createAlert("elasticsearch.reindex.acceptedSelected", ""))
             .build();
     }
 
