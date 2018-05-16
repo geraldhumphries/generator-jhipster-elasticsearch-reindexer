@@ -33,8 +33,8 @@ export class ElasticsearchReindexComponent {
                 var entity = file.split('.json')[0]; _%>
                 '<%=entity%>',
     <%_     });
-        } 
-    _%>          
+        }
+    _%>
                 'User'
         ];        
     }
