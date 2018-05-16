@@ -25,7 +25,9 @@
             }
             ElasticsearchReindex.reindexSelected(
                     {}, postData,
-                $uibModalInstance.close(true);
+                    function () {
+                        $uibModalInstance.close(true);
+                    }
             });
         }
     }
