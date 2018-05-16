@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 <%_ } _%>
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.PathVariable;
 <%_ if (usePostMapping) { _%>
 import org.springframework.web.bind.annotation.PostMapping;
 <%_ } _%>
