@@ -44,6 +44,30 @@
                     $state.go('^');
                 });
             }]
+        }).state('elasticsearch-reindex.selected-dialog', {
+            parent: 'elasticsearch-reindex',
+            url: '/elasticsearch-reindex/selected?entities',
+            data: {
+                authorities: ['ROLE_ADMIN']
+            },
+            params: {
+                entities: null
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function ($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: '<%=appFolder%>elasticsearch-reindex-dialog.html',
+                    controller: 'ElasticsearchReindexSelectedDialogController',
+                    controllerAs: 'vm',
+                    size: 'sm',
+                    resolve: {
+                        entities: function () {
+                            return $stateParams.entities;
+                        }
+                    }
+                }).result.finally(function () {
+                    $state.go('^');
+                });
+            }]
         });
     }
 })();
