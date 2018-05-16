@@ -3,7 +3,7 @@
 
     angular
         .module('<%=angularAppName%>')
-        .controller('ElasticsearchReindexSelectedDialogController', ElasticsearchReindexDialogController);
+        .controller('ElasticsearchReindexSelectedDialogController', ElasticsearchReindexSelectedDialogController);
 
     ElasticsearchReindexSelectedDialogController.$inject = ['$uibModalInstance', 'ElasticsearchReindex', 'entities'];
 
