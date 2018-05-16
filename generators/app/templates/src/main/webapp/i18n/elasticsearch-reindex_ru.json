@@ -2,6 +2,7 @@
     "elasticsearch": {
         "reindex": {
             "accepted": "Запрос принят, выполняю полную переиндексацию Elasticsearch.",
+            "acceptedSelected": "Запрос принят, выполняю частичную переиндексацию Elasticsearch.",
             "dialog": {
                 "title": "Подтверждение переиндексации Elasticsearch",
                 "question": "Вы уверены, что хотите переиндексирвоать Elasticsearch? Это может занять много времени!",
