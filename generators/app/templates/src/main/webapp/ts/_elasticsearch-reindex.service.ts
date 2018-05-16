@@ -26,7 +26,6 @@ export class ElasticsearchReindexService {
         return this.http.post('api/elasticsearch/index', {});
     }
 <%_ } %>
-
 <%_ if (useCommonHttpApi) { _%>
     reindexSelected(selectedEntities: string[]): Observable<HttpResponse<any>> {
         return this.http.post<any>('api/elasticsearch/selected', selectedEntities, {observe: 'response'});
@@ -36,5 +35,4 @@ export class ElasticsearchReindexService {
         return this.http.post('api/elasticsearch/selected', selectedEntities, {});
     }
 <%_ } %>
-
 }
