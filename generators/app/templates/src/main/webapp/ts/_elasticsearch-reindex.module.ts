@@ -6,6 +6,7 @@ import { <%=angularXAppName%>SharedModule } from '../../shared';
 import {
     ElasticsearchReindexComponent,
     ElasticsearchReindexModalComponent,
+    ElasticsearchReindexSelectedModalComponent,
     ElasticsearchReindexService,
     elasticsearchReindexRoute
 } from './';
@@ -21,10 +22,12 @@ const ADMIN_ROUTES = [
     ],
     declarations: [
         ElasticsearchReindexComponent,
-        ElasticsearchReindexModalComponent
+        ElasticsearchReindexModalComponent,
+        ElasticsearchReindexSelectedModalComponent
     ],
     entryComponents: [
-        ElasticsearchReindexModalComponent
+        ElasticsearchReindexModalComponent,
+        ElasticsearchReindexSelectedModalComponent
     ],
     providers: [
         ElasticsearchReindexService
