@@ -5,7 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import <%=packageName%>.domain.*;
 import <%=packageName%>.repository.*;
 import <%=packageName%>.repository.search.*;
+<%_ if (jhipsterMajorVersion > 4) { _%>
+import org.elasticsearch.ResourceAlreadyExistsException;
+<%_ } else { _%>
 import org.elasticsearch.indices.IndexAlreadyExistsException;
+<%_ } _%>
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -178,6 +182,12 @@ public class ElasticsearchIndexService {
         elasticsearchTemplate.deleteIndex(entityClass);
         try {
             elasticsearchTemplate.createIndex(entityClass);
+        <%_ if (jhipsterMajorVersion > 4) { _%>
+        } catch (ResourceAlreadyExistsException e) {
+        <%_ } else { _%>
+        } catch (IndexAlreadyExistsException e) {
+        <%_ } _%>
+
         } catch (IndexAlreadyExistsException e) {
             // Do nothing. Index was already concurrently recreated by some other service.
         }
