@@ -202,7 +202,7 @@ public class ElasticsearchIndexService {
             for (int i = 0; i <= jpaRepository.count() / size; i++) {
             <%_ if (jhipsterMajorVersion <= 4) { _%>
                 Pageable page = new PageRequest(i, size);
-            <%_ } else if (jhipsterMajorVersion > 4) {
+            <%_ } else if (jhipsterMajorVersion > 4) { _%>
                 Pageable page = PageRequest.of(i, size);
             <%_ } _ %>
                 log.info("Indexing page {} of {}, size {}", i, jpaRepository.count() / size, size);
