@@ -6,7 +6,7 @@ import { Http, Response } from '@angular/http';
 <%_ } %>
 import { Observable } from 'rxjs/Rx';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ElasticsearchReindexService {
 
     constructor(
