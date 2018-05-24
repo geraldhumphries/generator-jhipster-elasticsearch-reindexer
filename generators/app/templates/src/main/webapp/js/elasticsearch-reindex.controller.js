@@ -5,9 +5,9 @@
         .module('<%=angularAppName%>')
         .controller('ElasticsearchReindexController', ElasticsearchReindexController);
 
-    ElasticsearchReindexController.$inject = ['$state'];
+    ElasticsearchReindexController.$inject = ['$state', 'AlertService', '$translate'];
 
-    function ElasticsearchReindexController($state) {
+    function ElasticsearchReindexController($state, AlertService, $translate) {
         var vm = this;
         vm.reindexType = 'all';
         vm.entities = [
@@ -34,7 +34,11 @@
                 var reindexList = vm.entities.filter(function (name) {
                     return vm.checks[name];
                 });
-                $state.transitionTo('elasticsearch-reindex.selected-dialog', {entities: reindexList});
+                if (reindexList.length > 0) {
+                    $state.transitionTo('elasticsearch-reindex.selected-dialog', {entities: reindexList});
+                } else {
+                    AlertService.error($translate.instant('elasticsearch.reindex.selectEntityAlert'));
+                }
             }
         }
     }
