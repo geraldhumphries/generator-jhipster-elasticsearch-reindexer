@@ -46,7 +46,7 @@
             }]
         }).state('elasticsearch-reindex.selected-dialog', {
             parent: 'elasticsearch-reindex',
-            url: '/elasticsearch-reindex/selected?entities',
+            url: '/selected?entities',
             data: {
                 authorities: ['ROLE_ADMIN']
             },
