@@ -61,8 +61,8 @@ public class ElasticsearchIndexResource {
     @Timed
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> reindexAll() throws URISyntaxException {
-        log.info("REST request to reindex Elasticsearch by user : {}", SecurityUtils.getCurrentUserLogin());
-        elasticsearchIndexService.reindexAll();
+        log.info("REST request to reindex Elasticsearch by user : {}, all entities", SecurityUtils.getCurrentUserLogin());
+        elasticsearchIndexService.reindexSelected(null, true);
         return ResponseEntity.accepted()
             .headers(HeaderUtil.createAlert("elasticsearch.reindex.accepted", ""))
             .build();
@@ -81,8 +81,8 @@ public class ElasticsearchIndexResource {
     @Timed
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> reindexSelected(@RequestBody List<String> selectedEntities) throws URISyntaxException {
-        log.info("REST request to reindex Elasticsearch by user : {}", SecurityUtils.getCurrentUserLogin());
-        elasticsearchIndexService.reindexSelected(selectedEntities);
+        log.info("REST request to reindex Elasticsearch by user : {}, entities: {}", SecurityUtils.getCurrentUserLogin(), selectedEntities);
+        elasticsearchIndexService.reindexSelected(selectedEntities, false);
         return ResponseEntity.accepted()
             .headers(HeaderUtil.createAlert("elasticsearch.reindex.acceptedSelected", ""))
             .build();

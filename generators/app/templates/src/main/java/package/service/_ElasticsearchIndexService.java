@@ -122,20 +122,20 @@ public class ElasticsearchIndexService {
 
     @Async
     @Timed
-    public void reindexSelected(List<String> classesForReindex) {
+    public void reindexSelected(List<String> classesForReindex, boolean all) {
         if (reindexLock.tryLock()) {
             try {
         <%_ if (!applicationType || applicationType === 'monolith' || applicationType === 'microservice') {
                 entityFiles.forEach(function (file) {
                     var entity = file.split('.json')[0];
                     var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
-                if (classesForReindex.contains("<%=entity%>")) {
+                if (all || classesForReindex.contains("<%=entity%>")) {
                     reindexForClass(<%=entity%>.class, <%=entityLowerCase%>Repository, <%=entityLowerCase%>SearchRepository);
                 }
         <%_     });
             }
             if (!skipUserManagement && (!applicationType || applicationType === 'monolith' || applicationType === 'gateway')) { _%>
-                if (classesForReindex.contains("User")) {
+                if (all || classesForReindex.contains("User")) {
                     reindexForClass(User.class, userRepository, userSearchRepository);
                 }
         <%_ } _%>
@@ -153,26 +153,7 @@ public class ElasticsearchIndexService {
     @Async
     @Timed
     public void reindexAll() {
-        if (reindexLock.tryLock()) {
-            try {
-        <%_ if (!applicationType || applicationType === 'monolith' || applicationType === 'microservice') {
-                entityFiles.forEach(function (file) {
-                    var entity = file.split('.json')[0];
-                    var entityLowerCase = entity.charAt(0).toLowerCase() + entity.slice(1); _%>
-                reindexForClass(<%=entity%>.class, <%=entityLowerCase%>Repository, <%=entityLowerCase%>SearchRepository);
-        <%_     });
-            }
-            if (!skipUserManagement && (!applicationType || applicationType === 'monolith' || applicationType === 'gateway')) { _%>
-                reindexForClass(User.class, userRepository, userSearchRepository);
-        <%_ } _%>
-
-                log.info("Elasticsearch: Successfully performed reindexing");
-            } finally {
-                reindexLock.unlock();
-            }
-        } else {
-            log.info("Elasticsearch: concurrent reindexing attempt");
-        }
+        reindexSelected(null, true);
     }
 
     @SuppressWarnings("unchecked")
