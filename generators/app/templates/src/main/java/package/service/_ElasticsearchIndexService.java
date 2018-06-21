@@ -149,13 +149,6 @@ public class ElasticsearchIndexService {
         }
     }
 
-
-    @Async
-    @Timed
-    public void reindexAll() {
-        reindexSelected(null, true);
-    }
-
     @SuppressWarnings("unchecked")
     private <T, ID extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, ID> jpaRepository,
                                                               ElasticsearchRepository<T, ID> elasticsearchRepository) {
