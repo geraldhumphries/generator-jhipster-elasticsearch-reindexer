@@ -6,6 +6,7 @@ import <%=packageName%>.domain.*;
 import <%=packageName%>.repository.*;
 import <%=packageName%>.repository.search.*;
 import org.elasticsearch.indices.IndexAlreadyExistsException;
+import com.github.vanroy.springdata.jest.JestElasticsearchTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -59,7 +60,7 @@ public class ElasticsearchIndexService {
     private final UserSearchRepository userSearchRepository;
 
     <%_ } _%>
-    private final ElasticsearchTemplate elasticsearchTemplate;
+    private final JestElasticsearchTemplate elasticsearchTemplate;
 
     public ElasticsearchIndexService(
         <%_ if (!skipUserManagement && (applicationType === 'monolith' || applicationType === 'gateway')) { _%>
@@ -75,7 +76,7 @@ public class ElasticsearchIndexService {
         <%_
             });
         } _%>
-        ElasticsearchTemplate elasticsearchTemplate) {
+        JestElasticsearchTemplate elasticsearchTemplate) {
         <%_ if (!skipUserManagement && (applicationType === 'monolith' || applicationType === 'gateway')) { _%>
         this.userRepository = userRepository;
         this.userSearchRepository = userSearchRepository;
@@ -113,7 +114,7 @@ public class ElasticsearchIndexService {
 
     <%_ } _%>
     @Inject
-    private ElasticsearchTemplate elasticsearchTemplate;
+    private JestElasticsearchTemplate elasticsearchTemplate;
 <%_ } _%>
 
     @Async
