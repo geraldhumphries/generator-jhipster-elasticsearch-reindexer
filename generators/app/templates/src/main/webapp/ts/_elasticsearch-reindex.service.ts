@@ -4,7 +4,11 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 <%_ } else {_%>
 import { Http, Response } from '@angular/http';
 <%_ } %>
+<%_ if (jhipsterMajorVersion > 4) { _%>
+import { Observable } from 'rxjs';
+<%_ } else { _%>
 import { Observable } from 'rxjs/Rx';
+<%_ } _%>
 
 @Injectable({ providedIn: 'root' })
 export class ElasticsearchReindexService {

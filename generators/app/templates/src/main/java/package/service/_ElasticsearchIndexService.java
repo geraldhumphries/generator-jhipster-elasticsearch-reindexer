@@ -15,7 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+<%_ if (jhipsterMajorVersion > 4) { _%>
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.beans.factory.annotation.Value;
+<%_ } else { _%>
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+<%_ } _%>
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.scheduling.annotation.Async;
@@ -40,7 +47,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
+<%_ if (jhipsterMajorVersion > 4) { _%>
+public class ElasticsearchIndexService implements ApplicationListener<ContextRefreshedEvent> {
+<%_ } else { _%>
 public class ElasticsearchIndexService {
+<%_ } _%>
 
     private static final Lock reindexLock = new ReentrantLock();
 
@@ -63,7 +74,14 @@ public class ElasticsearchIndexService {
     private final UserSearchRepository userSearchRepository;
 
     <%_ } _%>
+    <%_ if (jhipsterMajorVersion > 4) { _%>
+    private final ElasticsearchOperations elasticsearchTemplate;
+
+    @Value("#{systemEnvironment['REINDEX_ELASTICSEARCH'] ?: ''}")
+    private String reindex_elasticsearch;
+    <%_ } else { _%>
     private final ElasticsearchTemplate elasticsearchTemplate;
+    <%_ } _%>
 
     public ElasticsearchIndexService(
         <%_ if (!skipUserManagement && (applicationType === 'monolith' || applicationType === 'gateway')) { _%>
@@ -79,7 +97,11 @@ public class ElasticsearchIndexService {
         <%_
             });
         } _%>
+        <%_ if (jhipsterMajorVersion > 4) { _%>
+        ElasticsearchOperations elasticsearchTemplate) {
+        <%_ } else { _%>
         ElasticsearchTemplate elasticsearchTemplate) {
+        <%_ } _%>
         <%_ if (!skipUserManagement && (applicationType === 'monolith' || applicationType === 'gateway')) { _%>
         this.userRepository = userRepository;
         this.userSearchRepository = userSearchRepository;
@@ -95,6 +117,17 @@ public class ElasticsearchIndexService {
         } _%>
         this.elasticsearchTemplate = elasticsearchTemplate;
     }
+
+    <%_ if (jhipsterMajorVersion > 4) { _%>
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent ) {
+        if (this.reindex_elasticsearch.isEmpty()) {
+            log.info("You may reindex all ElasticSearch entities on start-up with the REINDEX_ELASTICSEARCH environment variable set");
+        } else {
+            log.info("Reindexing all ElasticSearch entities");
+            this.reindexSelected(null, true);
+        }
+    }
+    <%_ } _%>
 <%_ } else if (jhipsterMajorVersion < 4) { _%>
     <%_ if (applicationType === 'monolith' || applicationType === 'microservice') {
             entityFiles.forEach(function (file) {
