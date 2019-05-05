@@ -4,7 +4,12 @@ import com.codahale.metrics.annotation.Timed;
 import <%=packageName%>.security.AuthoritiesConstants;
 import <%=packageName%>.security.SecurityUtils;
 import <%=packageName%>.service.ElasticsearchIndexService;
+<%_ if (jhipsterMajorVersion >= 6) { _%>
+import io.github.jhipster.web.util.HeaderUtil;
+import org.springframework.beans.factory.annotation.Value;
+<%_ } else { _%>
 import <%=packageName%>.web.rest.util.HeaderUtil;
+<%_ } _%>
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 <%_ if (!usePostMapping) { _%>
@@ -48,6 +53,10 @@ public class ElasticsearchIndexResource {
     private ElasticsearchIndexService elasticsearchIndexService;
     <%_ } _%>
 
+    <%_ if (jhipsterMajorVersion >= 6) { _%>
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+    <%_ } _%>
     /**
      * POST  /elasticsearch/index -> Reindex all Elasticsearch documents
      */
@@ -64,7 +73,11 @@ public class ElasticsearchIndexResource {
         log.info("REST request to reindex Elasticsearch by user : {}, all entities", SecurityUtils.getCurrentUserLogin());
         elasticsearchIndexService.reindexSelected(null, true);
         return ResponseEntity.accepted()
+            <%_ if (jhipsterMajorVersion >= 6) { _%>
+            .headers(HeaderUtil.createAlert(applicationName, "elasticsearch.reindex.accepted", ""))
+            <%_ } else { _%>
             .headers(HeaderUtil.createAlert("elasticsearch.reindex.accepted", ""))
+            <%_ } _%>
             .build();
     }
 
@@ -84,7 +97,11 @@ public class ElasticsearchIndexResource {
         log.info("REST request to reindex Elasticsearch by user : {}, entities: {}", SecurityUtils.getCurrentUserLogin(), selectedEntities);
         elasticsearchIndexService.reindexSelected(selectedEntities, false);
         return ResponseEntity.accepted()
+            <%_ if (jhipsterMajorVersion >= 6) { _%>
+            .headers(HeaderUtil.createAlert(applicationName, "elasticsearch.reindex.acceptedSelected", ""))
+            <%_ } else { _%>
             .headers(HeaderUtil.createAlert("elasticsearch.reindex.acceptedSelected", ""))
+            <%_ } _%>
             .build();
     }
 

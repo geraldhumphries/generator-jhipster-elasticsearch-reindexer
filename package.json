@@ -12,6 +12,10 @@
     "email": "geraldhumphries@gmail.com",
     "url": "geraldhumphries.com"
   },
+  "contributors": [
+    "Alexander Volf <job-github@wolf-a.ru> (https://www.wolf-a.ru/)",
+    "Gabriel Adriano <gam@gamdev.com.br> (https://gamdev.com.br)"
+  ],
   "files": [
     "generators"
   ],

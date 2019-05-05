@@ -51,6 +51,7 @@ var functions = {
       this.skipServer = config.skipServer;
       this.skipUserManagement = config.skipUserManagement;
       this.authenticationType = config.authenticationType;
+      this.jhiPrefixDashed = config.jhiPrefix; // TODO_make sure prefix is ok
 
       if (this.authenticationType === 'uaa' && this.applicationType === 'gateway') {
         this.skipUserManagement = true;
@@ -104,6 +105,9 @@ var functions = {
       function getConfig(context) {
         if (context.getJhipsterAppConfig) {
           return context.getJhipsterAppConfig();
+        }
+        if (context.getAllJhipsterConfig) {
+          return context.getAllJhipsterConfig();
         }
 
         var fromPath = '.yo-rc.json';
@@ -188,6 +192,9 @@ var functions = {
       if (!this.skipServer) {
         this.template('src/main/java/package/web/rest/_ElasticsearchIndexResource.java', jhipsterVar.javaDir + 'web/rest/ElasticsearchIndexResource.java', this, {});
         this.template('src/main/java/package/service/_ElasticsearchIndexService.java', jhipsterVar.javaDir + 'service/ElasticsearchIndexService.java', this, {});
+        if (this.jhipsterMajorVersion > 4) {
+          this.addMavenDependency("com.codahale.metrics", "metrics-annotation", "3.0.2");
+        }
       }
       if (!this.skipClient) {
         if (this.clientFramework === 'angular1') {
@@ -247,10 +254,12 @@ var functions = {
             this.log(chalk.yellow('  - inside @NgModule, imports: ') + this.angularXAppName + 'ElasticsearchReindexModule\n');
           }
           if (this.addElementToAdminMenu) {
-            this.addElementToAdminMenu('elasticsearch-reindex', 'fw fa-search', this.enableTranslation, this.clientFramework);
+            let icon_name = this.jhipsterMajorVersion < 5 ? 'fw fa-search' : 'search';
+            let route_prefix = this.jhipsterMajorVersion < 5 ? '' : 'admin/'
+            this.addElementToAdminMenu(route_prefix + 'elasticsearch-reindex', icon_name, this.enableTranslation, this.clientFramework);
             if (this.enableTranslation) {
               this.languages.forEach((language) => {
-                this.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', language);
+                this.addAdminElementTranslationKey(route_prefix + 'elasticsearch-reindex', 'Reindex Elasticsearch', language);
               });
             }
           }

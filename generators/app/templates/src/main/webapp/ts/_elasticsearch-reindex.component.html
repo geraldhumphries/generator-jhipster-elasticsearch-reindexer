@@ -2,7 +2,7 @@
     <h2>
         <span<% if (enableTranslation) { %> jhiTranslate="elasticsearch.reindex.title"<% } %>>Reindex Elasticsearch</span>
     </h2>
-    <jhi-alert></jhi-alert>
+    <<%= jhiPrefixDashed %>-alert></<%= jhiPrefixDashed %>-alert>
     <p<% if (enableTranslation) { %> jhiTranslate="elasticsearch.reindex.instructions1"<% } %>>
         This will send a request to reindex all data from your primary datasource into Elasticsearch. This will fix
         missing data and mapping issues, however you will lose any ES data and mapping that was defined outside of your

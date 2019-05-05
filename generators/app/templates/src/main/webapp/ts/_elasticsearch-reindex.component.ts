@@ -8,7 +8,7 @@ import { ElasticsearchReindexModalComponent } from './elasticsearch-reindex-moda
 import { ElasticsearchReindexSelectedModalComponent } from './elasticsearch-reindex-selected-modal.component';
 
 @Component({
-    selector: 'jhi-elasticsearch-reindex',
+    selector: '<%= jhiPrefixDashed %>-elasticsearch-reindex',
     templateUrl: './elasticsearch-reindex.component.html'
 })
 export class ElasticsearchReindexComponent {

@@ -18,7 +18,11 @@ const ADMIN_ROUTES = [
 @NgModule({
     imports: [
         <%=angularXAppName%>SharedModule,
+        <%_ if (jhipsterMajorVersion > 4) { _%>
+            RouterModule.forChild(ADMIN_ROUTES)
+        <%_ } else { _%>
         RouterModule.forRoot(ADMIN_ROUTES, { useHash: true })
+        <%_ } _%>
     ],
     declarations: [
         ElasticsearchReindexComponent,
