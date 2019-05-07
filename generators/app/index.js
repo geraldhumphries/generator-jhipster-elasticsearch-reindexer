@@ -254,12 +254,12 @@ var functions = {
             this.log(chalk.yellow('  - inside @NgModule, imports: ') + this.angularXAppName + 'ElasticsearchReindexModule\n');
           }
           if (this.addElementToAdminMenu) {
-            let icon_name = this.jhipsterMajorVersion < 5 ? 'fw fa-search' : 'search';
-            let route_prefix = this.jhipsterMajorVersion < 5 ? '' : 'admin/'
-            this.addElementToAdminMenu(route_prefix + 'elasticsearch-reindex', icon_name, this.enableTranslation, this.clientFramework);
+            let iconName = this.jhipsterMajorVersion < 5 ? 'fw fa-search' : 'search';
+            let routePrefix = this.jhipsterMajorVersion < 5 ? '' : 'admin/'
+            this.addElementToAdminMenu(routePrefix + 'elasticsearch-reindex', iconName, this.enableTranslation, this.clientFramework);
             if (this.enableTranslation) {
               this.languages.forEach((language) => {
-                this.addAdminElementTranslationKey(route_prefix + 'elasticsearch-reindex', 'Reindex Elasticsearch', language);
+                this.addAdminElementTranslationKey(routePrefix + 'elasticsearch-reindex', 'Reindex Elasticsearch', language);
               });
             }
           }
