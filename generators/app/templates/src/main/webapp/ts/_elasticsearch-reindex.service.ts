@@ -4,7 +4,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 <%_ } else {_%>
 import { Http, Response } from '@angular/http';
 <%_ } %>
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class ElasticsearchReindexService {
