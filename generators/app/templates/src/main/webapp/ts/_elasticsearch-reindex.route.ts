@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { UserRouteAccessService } from '../../core';
+import { UserRouteAccessService } from 'app/core';
 import { ElasticsearchReindexComponent } from './elasticsearch-reindex.component';
 
 export const elasticsearchReindexRoute: Route = {

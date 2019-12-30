@@ -17,7 +17,7 @@ const ADMIN_ROUTES = [
 @NgModule({
     imports: [
         <%=angularXAppName%>SharedModule,
-        RouterModule.forRoot(ADMIN_ROUTES, { useHash: true })
+        RouterModule.forChild(ADMIN_ROUTES)
     ],
     declarations: [
         ElasticsearchReindexComponent,
