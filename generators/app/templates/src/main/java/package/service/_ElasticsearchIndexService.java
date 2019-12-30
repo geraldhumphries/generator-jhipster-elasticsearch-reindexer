@@ -10,6 +10,11 @@ import <%=packageName%>.repository.search.*;
 <%_ if (useJest) { _%>
 import com.github.vanroy.springdata.jest.JestElasticsearchTemplate;
 <%_ } _%>
+<%_ if (useResourceException) { _%>
+import org.elasticsearch.ResourceAlreadyExistsException;
+<%_ } else { _%>
+import org.elasticsearch.indices.IndexAlreadyExistsException;
+<%_ } _%>
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -169,7 +174,11 @@ public class ElasticsearchIndexService {
         elasticsearchTemplate.deleteIndex(entityClass);
         try {
             elasticsearchTemplate.createIndex(entityClass);
-        } catch (Exception e) {
+        <%_ if (useResourceException) { _%>
+        } catch (ResourceAlreadyExistsException e) {
+        <%_ } else { _%>
+        } catch (IndexAlreadyExistsException e) {
+        <%_ } _%>
             // Do nothing. Index was already concurrently recreated by some other service.
         }
         elasticsearchTemplate.putMapping(entityClass);

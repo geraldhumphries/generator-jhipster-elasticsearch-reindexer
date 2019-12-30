@@ -681,6 +681,16 @@ describe('JHipster Elasticsearch Reindexer', () => {
     it('does not use PageRequest.of()', () => {
       assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'PageRequest.of(');
     });
+
+    it('does not use ResourceAlreadyExistsException', () => {
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'import org.elasticsearch.ResourceAlreadyExistsException;');
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', '} catch (ResourceAlreadyExistsException e) {');
+    });
+
+    it('uses IndexAlreadyExistsException', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'import org.elasticsearch.indices.IndexAlreadyExistsException;');
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', '} catch (IndexAlreadyExistsException e) {');
+    });
   });
 
   describe('App with Spring Data 2.x', () => {
@@ -706,6 +716,16 @@ describe('JHipster Elasticsearch Reindexer', () => {
 
     it('uses PageRequest.of()', () => {
       assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'PageRequest.of(');
+    });
+
+    it('uses ResourceAlreadyExistsException', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'import org.elasticsearch.ResourceAlreadyExistsException;');
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', '} catch (ResourceAlreadyExistsException e) {');
+    });
+
+    it('does not use IndexAlreadyExistsException', () => {
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'import org.elasticsearch.indices.IndexAlreadyExistsException;');
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', '} catch (IndexAlreadyExistsException e) {');
     });
   });
 
