@@ -7,14 +7,15 @@ import { ElasticsearchReindexService } from './elasticsearch-reindex.service';
     selector: '<%= jhiPrefixDashed %>-elasticsearch-reindex-modal',
     templateUrl: './elasticsearch-reindex-modal.component.html'
 })
-export class ElasticsearchReindexModalComponent {
+export class ElasticsearchReindexSelectedModalComponent {
 
+    entities: string[];
     constructor(
         private elasticsearchReindexService: ElasticsearchReindexService,
         public activeModal: NgbActiveModal
     ) { }
 
     reindex() {
-        this.elasticsearchReindexService.reindex().subscribe(() => this.activeModal.dismiss());
+        this.elasticsearchReindexService.reindexSelected(this.entities).subscribe(() => this.activeModal.dismiss());
     }
 }

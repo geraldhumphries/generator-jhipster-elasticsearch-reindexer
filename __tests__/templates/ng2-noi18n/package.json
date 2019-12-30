@@ -1,7 +1,7 @@
 {
-  "name": "jhipster-sample-application-ng-2",
+  "name": "jhipster-sample-application-ng-2-noi18n",
   "version": "0.0.0",
-  "description": "Description for jhipsterSampleApplicationNG2",
+  "description": "Description for jhipsterSampleApplicationNG2noi18n",
   "private": true,
   "license": "UNLICENSED",
   "cacheDirectories": [

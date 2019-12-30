@@ -1,0 +1,18 @@
+{
+    "elasticsearch": {
+        "reindex": {
+            "accepted": "Solicitação aceita, efetuando a reindexação total no mecanismo de busca.",
+            "acceptedSelected": "Solicitação aceita, efetuando a reindexação parcial no mecanismo de busca.",
+            "dialog": {
+                "title": "Confirma reindexação",
+                "question": "Tem certeza que deseja reindexar o mecanismo de busca? Isso pode levar algum tempo!",
+                "cancel": "Cancelar",
+                "confirm": "Reindexar"
+            },
+            "title": "Reindexar Buscas",
+            "instructions1": "Isso enviará uma solicitação para reindexar todos os dados de sua origem principal de dados no mecanismo de busca Elasticsearch. Isso corrigirá problemas de mapeamento e dados ausentes, no entanto, você perderá todos os dados e mapeamentos de ES que foram definidos fora do seu aplicativo. Essa solicitação retornará imediatamente e a reindexação será executada em segundo plano. Você verá \"Elasticsearch: Successfully performed reindexing \" em seus logs quando isso for concluído.",
+            "instructions2": "Isso pode levar muito tempo e é suscetível a problemas de simultaneidade, portanto, deve ser executado quando o número de usuários for baixo.",
+            "go": "Reindexar"
+        }
+    }
+}

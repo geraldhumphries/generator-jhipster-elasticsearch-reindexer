@@ -51,6 +51,7 @@ var functions = {
       this.skipServer = config.skipServer;
       this.skipUserManagement = config.skipUserManagement;
       this.authenticationType = config.authenticationType;
+      this.jhiPrefixDashed = config.jhiPrefix; // TODO_make sure prefix is ok
 
       if (this.authenticationType === 'uaa' && this.applicationType === 'gateway') {
         this.skipUserManagement = true;
@@ -104,6 +105,9 @@ var functions = {
       function getConfig(context) {
         if (context.getJhipsterAppConfig) {
           return context.getJhipsterAppConfig();
+        }
+        if (context.getAllJhipsterConfig) {
+          return context.getAllJhipsterConfig();
         }
 
         var fromPath = '.yo-rc.json';
@@ -188,11 +192,15 @@ var functions = {
       if (!this.skipServer) {
         this.template('src/main/java/package/web/rest/_ElasticsearchIndexResource.java', jhipsterVar.javaDir + 'web/rest/ElasticsearchIndexResource.java', this, {});
         this.template('src/main/java/package/service/_ElasticsearchIndexService.java', jhipsterVar.javaDir + 'service/ElasticsearchIndexService.java', this, {});
+        if (this.jhipsterMajorVersion > 4) {
+          this.addMavenDependency("com.codahale.metrics", "metrics-annotation", "3.0.2");
+        }
       }
       if (!this.skipClient) {
         if (this.clientFramework === 'angular1') {
           this.template('src/main/webapp/js/elasticsearch-reindex.controller.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.controller.js', this, {});
           this.template('src/main/webapp/js/elasticsearch-reindex-dialog.controller.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-dialog.controller.js', this, {});
+          this.template('src/main/webapp/js/elasticsearch-reindex-selected-dialog.controller.js', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-selected-dialog.controller.js', this, {});
           this.template('src/main/webapp/js/elasticsearch-reindex.service.js', jhipsterVar.webappDir + this.serviceFolder + '/elasticsearch-reindex.service.js', this, {});
           this.template('src/main/webapp/html/elasticsearch-reindex.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.html', this, {});
           this.template('src/main/webapp/html/elasticsearch-reindex-dialog.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-dialog.html', this, {});
@@ -212,6 +220,7 @@ var functions = {
           if (this.addJavaScriptToIndex) {
             this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.controller.js');
             this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex-dialog.controller.js');
+            this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex-selected-dialog.controller.js');
             if (this.jhipsterMajorVersion > 2) {
               this.addJavaScriptToIndex('app/admin/elasticsearch-reindex/elasticsearch-reindex.state.js');
               this.addJavaScriptToIndex('app/admin/elasticsearch-reindex.service.js');
@@ -230,6 +239,7 @@ var functions = {
         } else if (this.clientFramework === 'angularX') {
           this.template('src/main/webapp/ts/_elasticsearch-reindex-modal.component.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-modal.component.html', this, {});
           this.template('src/main/webapp/ts/_elasticsearch-reindex-modal.component.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-modal.component.ts', this, {});
+          this.template('src/main/webapp/ts/_elasticsearch-reindex-selected-modal.component.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex-selected-modal.component.ts', this, {});
           this.template('src/main/webapp/ts/_elasticsearch-reindex.component.html', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.component.html', this, {});
           this.template('src/main/webapp/ts/_elasticsearch-reindex.component.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.component.ts', this, {});
           this.template('src/main/webapp/ts/_elasticsearch-reindex.module.ts', jhipsterVar.webappDir + this.appFolder + '/elasticsearch-reindex.module.ts', this, {});
@@ -244,10 +254,12 @@ var functions = {
             this.log(chalk.yellow('  - inside @NgModule, imports: ') + this.angularXAppName + 'ElasticsearchReindexModule\n');
           }
           if (this.addElementToAdminMenu) {
-            this.addElementToAdminMenu('elasticsearch-reindex', 'fw fa-search', this.enableTranslation, this.clientFramework);
+            let iconName = this.jhipsterMajorVersion < 5 ? 'fw fa-search' : 'search';
+            let routePrefix = this.jhipsterMajorVersion < 5 ? '' : 'admin/'
+            this.addElementToAdminMenu(routePrefix + 'elasticsearch-reindex', iconName, this.enableTranslation, this.clientFramework);
             if (this.enableTranslation) {
               this.languages.forEach((language) => {
-                this.addAdminElementTranslationKey('elasticsearch-reindex', 'Reindex Elasticsearch', language);
+                this.addAdminElementTranslationKey(routePrefix + 'elasticsearch-reindex', 'Reindex Elasticsearch', language);
               });
             }
           }

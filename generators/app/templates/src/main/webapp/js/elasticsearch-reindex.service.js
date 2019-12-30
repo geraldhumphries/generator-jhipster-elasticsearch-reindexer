@@ -9,7 +9,8 @@
 
     function ElasticsearchReindex($resource) {
         var service = $resource('api/elasticsearch/index', {}, {
-            'reindex': {method: 'POST'}
+            'reindex': {method: 'POST'},
+            'reindexSelected': {method: 'POST', url: 'api/elasticsearch/selected'}
         });
 
         return service;

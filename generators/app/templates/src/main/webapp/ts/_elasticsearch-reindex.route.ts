@@ -1,5 +1,9 @@
 import { Route } from '@angular/router';
+<%_ if (jhipsterMajorVersion > 4) { _%>
+import { UserRouteAccessService } from 'app/core';
+<%_ } else { _%>
 import { UserRouteAccessService } from '../../shared';
+<%_ } _%>
 import { ElasticsearchReindexComponent } from './elasticsearch-reindex.component';
 
 export const elasticsearchReindexRoute: Route = {
