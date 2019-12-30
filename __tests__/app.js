@@ -873,4 +873,58 @@ describe('JHipster Elasticsearch Reindexer', () => {
     });
   });
 
+  describe('App with absolute TypeScript imports', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .withOptions({skipInstall: true, skipChecks: true})
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/ts-imports-absolute'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('uses absolute imports', () => {
+      assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.module.ts', 'from \'app/shared\';');
+    });
+
+    it('does not use relative imports', () => {
+      assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.module.ts', 'from \'../../shared\';');
+    });
+
+    it('imports UserRouteAccessService from core', () => {
+      assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.route.ts', 'import { UserRouteAccessService } from \'app/core\';');
+    });
+
+    it('does not import UserRouteAccessService from shared', () => {
+      assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.route.ts', 'import { UserRouteAccessService } from \'../../shared\';');
+    });
+  });
+
+  describe('App with relative TypeScript imports', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .withOptions({skipInstall: true, skipChecks: true})
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/ts-imports-relative'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('does not use absolute imports', () => {
+      assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.module.ts', 'from \'app/shared\';');
+    });
+
+    it('uses relative imports', () => {
+      assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.module.ts', 'from \'../../shared\';');
+    });
+
+    it('does not import UserRouteAccessService from core', () => {
+      assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.route.ts', 'import { UserRouteAccessService } from \'app/core\';');
+    });
+
+    it('imports UserRouteAccessService from shared', () => {
+      assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.route.ts', 'import { UserRouteAccessService } from \'../../shared\';');
+    });
+  });
+
 });

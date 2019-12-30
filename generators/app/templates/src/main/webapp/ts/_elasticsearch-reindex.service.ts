@@ -10,11 +10,11 @@ import { Observable } from 'rxjs';
 export class ElasticsearchReindexService {
 
     constructor(
-<%_ if (useCommonHttpApi) { _%>
+        <%_ if (useCommonHttpApi) { _%>
         private http: HttpClient
-<%_ } else {_%>
+        <%_ } else { _%>
         private http: Http
-<%_ } %>
+        <%_ } _%>
     ) { }
 
 <%_ if (useCommonHttpApi) { _%>

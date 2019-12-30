@@ -1,5 +1,10 @@
 import { Route } from '@angular/router';
+<%_ if (useAbsoluteTsImports) { _%>
 import { UserRouteAccessService } from 'app/core';
+<%_ } else {_%>
+import { UserRouteAccessService } from '../../shared';
+<%_ } %>
+
 import { ElasticsearchReindexComponent } from './elasticsearch-reindex.component';
 
 export const elasticsearchReindexRoute: Route = {

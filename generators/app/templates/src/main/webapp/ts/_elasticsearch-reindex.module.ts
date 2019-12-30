@@ -1,7 +1,11 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
+<%_ if (useAbsoluteTsImports) { _%>
+import { <%=angularXAppName%>SharedModule } from 'app/shared';
+<%_ } else {_%>
 import { <%=angularXAppName%>SharedModule } from '../../shared';
+<%_ } %>
 
 import {
     ElasticsearchReindexComponent,
