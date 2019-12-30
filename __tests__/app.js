@@ -657,4 +657,200 @@ describe('JHipster Elasticsearch Reindexer', () => {
     });
   });
 
+  describe('App with Spring Data 1.x', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/spring-data-1'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('uses ElasticsearchRepository.save()', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'elasticsearchRepository.save(');
+    });
+
+    it('does not use ElasticsearchRepository.saveAll()', () => {
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'elasticsearchRepository.saveAll(');
+    });
+
+    it('uses PageRequest constructor', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'new PageRequest(');
+    });
+
+    it('does not use PageRequest.of()', () => {
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'PageRequest.of(');
+    });
+  });
+
+  describe('App with Spring Data 2.x', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/spring-data-2'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('uses ElasticsearchRepository.saveAll()', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'elasticsearchRepository.saveAll(');
+    });
+
+    it('does not use ElasticsearchRepository.save()', () => {
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'elasticsearchRepository.save(');
+    });
+
+    it('does not use PageRequest constructor', () => {
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'new PageRequest(');
+    });
+
+    it('uses PageRequest.of()', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'PageRequest.of(');
+    });
+  });
+
+  describe('App with Elasticsearch Jest', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/es-jest'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('uses JestElasticsearchTemplate', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'import com.github.vanroy.springdata.jest.JestElasticsearchTemplate;');
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'private final JestElasticsearchTemplate elasticsearchTemplate;');
+    });
+
+    it('does not use ElasticsearchTemplate', () => {
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;');
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'private final ElasticsearchTemplate elasticsearchTemplate;');
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'private ElasticsearchTemplate elasticsearchTemplate;');
+    });
+  });
+
+  describe('App without Elasticsearch Jest', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/es-no-jest'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('does not use JestElasticsearchTemplate', () => {
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'import com.github.vanroy.springdata.jest.JestElasticsearchTemplate;');
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'private final JestElasticsearchTemplate elasticsearchTemplate;');
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'private JestElasticsearchTemplate elasticsearchTemplate;');
+    });
+
+    it('uses ElasticsearchTemplate', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;');
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'private final ElasticsearchTemplate elasticsearchTemplate;');
+    });
+  });
+
+  describe('App with HeaderUtil from JHipster library', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/headerutil-from-library'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('uses HeaderUtil from JHipster library', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import io.github.jhipster.web.util.HeaderUtil;');
+    });
+
+    it('injects applicationName', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', '@Value("${jhipster.clientApp.name}")');
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'private String applicationName;');
+    });
+
+    it('calls createAlert with applicationName', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'HeaderUtil.createAlert(applicationName, "elasticsearch.reindex.accepted", null)');
+    });
+
+    it('does not use HeaderUtil from code', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', '.web.rest.util.HeaderUtil;');
+    });
+
+    it('does not call createAlert without applicationName', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'HeaderUtil.createAlert("elasticsearch.reindex.accepted", null)');
+    });
+  });
+
+  describe('App with HeaderUtil from code', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/headerutil-from-code'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('does not use HeaderUtil from JHipster library', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import io.github.jhipster.web.util.HeaderUtil;');
+    });
+
+    it('does not inject applicationName', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', '@Value("${jhipster.clientApp.name}")');
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'private String applicationName;');
+    });
+
+    it('does not call createAlert with applicationName', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'HeaderUtil.createAlert(applicationName, "elasticsearch.reindex.accepted", null)');
+    });
+
+    it('uses HeaderUtil from code', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', '.web.rest.util.HeaderUtil;');
+    });
+
+    it('calls createAlert without applicationName', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'HeaderUtil.createAlert("elasticsearch.reindex.accepted", null)');
+    });
+  });
+
+  describe('App that uses Timed annotation', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/timed'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('uses Timed annotation in Resource', () => {
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import com.codahale.metrics.annotation.Timed;');
+      assert.fileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', '@Timed');
+    });
+
+    it('uses Timed annotation in Service', () => {
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'import com.codahale.metrics.annotation.Timed;');
+      assert.fileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', '@Timed');
+    });
+  });
+
+  describe('App that does not use Timed annotation', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/timed-removed'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('does not use Timed annotation in Resource', () => {
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', 'import com.codahale.metrics.annotation.Timed;');
+      assert.noFileContent(JAVA_PATH + 'web/rest/ElasticsearchIndexResource.java', '@Timed');
+    });
+
+    it('does not use Timed annotation in Service', () => {
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', 'import com.codahale.metrics.annotation.Timed;');
+      assert.noFileContent(JAVA_PATH + 'service/ElasticsearchIndexService.java', '@Timed');
+    });
+  });
+
 });

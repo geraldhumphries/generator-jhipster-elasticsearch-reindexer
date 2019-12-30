@@ -60,10 +60,10 @@ var functions = {
 
       this.angularVersion = '1.0.0';
 
-      if (npmConfig && npmConfig['dependencies'] && npmConfig['dependencies']['@angular/core']) {
-        this.angularVersion = npmConfig['dependencies']['@angular/core'];
-      } else if (bowerConfig && bowerConfig['dependencies'] && bowerConfig['dependencies']['angular']) {
-        this.angularVersion = bowerConfig['dependencies']['angular'];
+      if (npmConfig && npmConfig.dependencies && npmConfig.dependencies['@angular/core']) {
+        this.angularVersion = npmConfig.dependencies['@angular/core'];
+      } else if (bowerConfig && bowerConfig.dependencies && bowerConfig.dependencies.angular) {
+        this.angularVersion = bowerConfig.dependencies.angular;
       }
 
       this.clientFramework = semver.gte(this.angularVersion, '2.0.0') ? 'angularX' : 'angular1';
@@ -78,6 +78,11 @@ var functions = {
       this.useCommonHttpApi = semver.gte(this.angularVersion, '5.0.0');
       this.requiresSetLocation = this.jhipsterVersion ? semver.lt(this.jhipsterVersion, '4.4.4') : false;
       this.usePostMapping = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '3.10.0') : false;
+      this.useJest = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '5.3.0') : false;
+      this.useTimedAnnotation = this.jhipsterVersion ? semver.lt(this.jhipsterVersion, '5.8.0') : false;
+      this.useHeaderUtilFromLibrary = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '6.0.0') : false;
+      this.useSaveAll = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '5.0.0') : false;
+      this.usePageRequestOf = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '5.0.0') : false;
 
       this.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
         return file.match(/\.json$/);
@@ -276,7 +281,7 @@ var functions = {
 
 var generator;
 
-if (yeomanGenerator.extend || (yeomanGenerator.Base && yeomanGenerator.Base.extend)) {
+if (yeomanGenerator.extend || yeomanGenerator.Base && yeomanGenerator.Base.extend) {
   if (yeomanGenerator.extend) {
     JhipsterGenerator = yeomanGenerator.extend({});
   } else {

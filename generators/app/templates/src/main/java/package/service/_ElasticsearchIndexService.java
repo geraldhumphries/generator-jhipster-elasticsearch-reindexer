@@ -1,17 +1,23 @@
 package <%=packageName%>.service;
 
+<%_ if (useTimedAnnotation) { _%>
 import com.codahale.metrics.annotation.Timed;
+<%_ } _%>
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import <%=packageName%>.domain.*;
 import <%=packageName%>.repository.*;
 import <%=packageName%>.repository.search.*;
+<%_ if (useJest) { _%>
 import com.github.vanroy.springdata.jest.JestElasticsearchTemplate;
+<%_ } _%>
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+<%_ if (!useJest) { _%>
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+<%_ } _%>
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.scheduling.annotation.Async;
@@ -59,7 +65,11 @@ public class ElasticsearchIndexService {
     private final UserSearchRepository userSearchRepository;
 
     <%_ } _%>
+    <%_ if (useJest) { _%>
     private final JestElasticsearchTemplate elasticsearchTemplate;
+    <%_ } else { _%>
+    private final ElasticsearchTemplate elasticsearchTemplate;
+    <%_ } _%>
 
     public ElasticsearchIndexService(
         <%_ if (!skipUserManagement && (applicationType === 'monolith' || applicationType === 'gateway')) { _%>
@@ -75,7 +85,11 @@ public class ElasticsearchIndexService {
         <%_
             });
         } _%>
+        <%_ if (useJest) { _%>
         JestElasticsearchTemplate elasticsearchTemplate) {
+        <%_ } else { _%>
+        ElasticsearchTemplate elasticsearchTemplate) {
+        <%_ } _%>
         <%_ if (!skipUserManagement && (applicationType === 'monolith' || applicationType === 'gateway')) { _%>
         this.userRepository = userRepository;
         this.userSearchRepository = userSearchRepository;
@@ -112,12 +126,20 @@ public class ElasticsearchIndexService {
     private UserSearchRepository userSearchRepository;
 
     <%_ } _%>
-    @Inject
-    private JestElasticsearchTemplate elasticsearchTemplate;
+
+    <%_ if (useJest) { _%>
+      @Inject
+      private JestElasticsearchTemplate elasticsearchTemplate;
+    <%_ } else { _%>
+      @Inject
+      private ElasticsearchTemplate elasticsearchTemplate;
+    <%_ } _%>
 <%_ } _%>
 
     @Async
+    <%_ if (useTimedAnnotation) { _%>
     @Timed
+    <%_ } _%>
     public void reindexAll() {
         if (reindexLock.tryLock()) {
             try {
@@ -172,7 +194,11 @@ public class ElasticsearchIndexService {
 
             int size = 100;
             for (int i = 0; i <= jpaRepository.count() / size; i++) {
+                <%_ if (usePageRequestOf) { _%>
+                Pageable page = PageRequest.of(i, size);
+                <%_ } else { _%>
                 Pageable page = new PageRequest(i, size);
+                <%_ } _%>
                 log.info("Indexing page {} of {}, size {}", i, jpaRepository.count() / size, size);
                 Page<T> results = jpaRepository.findAll(page);
                 results.map(result -> {
@@ -187,7 +213,11 @@ public class ElasticsearchIndexService {
                     });
                     return result;
                 });
+                <%_ if (useSaveAll) { _%>
                 elasticsearchRepository.saveAll(results.getContent());
+                <%_ } else { _%>
+                elasticsearchRepository.save(results.getContent());
+                <%_ } _%>
             }
         }
         log.info("Elasticsearch: Indexed all rows for {}", entityClass.getSimpleName());
