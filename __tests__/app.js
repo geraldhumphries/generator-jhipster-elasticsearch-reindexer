@@ -927,4 +927,46 @@ describe('JHipster Elasticsearch Reindexer', () => {
     });
   });
 
+  describe('App with full module paths', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .withOptions({skipInstall: true, skipChecks: true})
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/ts-modules-full'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('uses full module paths', () => {
+      assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.module.ts', 'from \'app/shared/shared.module\';');
+      assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.route.ts', 'from \'app/core/auth/user-route-access-service\';');
+    });
+
+    it('does not use abbreviated paths', () => {
+      assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.module.ts', 'from \'app/shared\';');
+      assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.route.ts', 'from \'app/core\'');
+    });
+  });
+
+  describe('App with abbreviated module paths', () => {
+    beforeAll(() => {
+      return helpers.run(path.join(__dirname, '../generators/app'))
+        .withOptions({skipInstall: true, skipChecks: true})
+        .inTmpDir((dir) => {
+          fse.copySync(path.join(__dirname, 'templates/ts-modules-abbr'), dir);
+          fse.copySync(path.join(__dirname, 'templates/.jhipster'), dir + '/.jhipster');
+        });
+    });
+
+    it('does not use full module paths', () => {
+      assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.module.ts', 'from \'app/shared/shared.module\';');
+      assert.noFileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.route.ts', 'from \'app/core/auth/user-route-access-service\';');
+    });
+
+    it('uses abbreviated paths', () => {
+      assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.module.ts', 'from \'app/shared\';');
+      assert.fileContent(WEBAPP_PATH + 'app/admin/elasticsearch-reindex/elasticsearch-reindex.route.ts', 'from \'app/core\'');
+    });
+  });
+
 });
