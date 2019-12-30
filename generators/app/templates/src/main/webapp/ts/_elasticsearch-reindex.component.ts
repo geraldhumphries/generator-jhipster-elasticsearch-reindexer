@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 <%_ if (enableTranslation && requiresSetLocation) { _%>
 import { JhiLanguageService } from 'ng-jhipster';

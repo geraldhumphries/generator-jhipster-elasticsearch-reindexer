@@ -2,10 +2,14 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 <%_ if (useAbsoluteTsImports) { _%>
+  <%_ if (useFullModuleImport) { _%>
+import { <%=angularXAppName%>SharedModule } from 'app/shared/shared.module';
+  <%_ } else { _%>
 import { <%=angularXAppName%>SharedModule } from 'app/shared';
-<%_ } else {_%>
+  <%_ } _%>
+<%_ } else { _%>
 import { <%=angularXAppName%>SharedModule } from '../../shared';
-<%_ } %>
+<%_ } _%>
 
 import {
     ElasticsearchReindexComponent,
