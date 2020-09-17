@@ -86,6 +86,7 @@ var functions = {
       this.useResourceException = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '5.0.0') : false;
       this.useAbsoluteTsImports = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '5.0.0') : false;
       this.useFullModuleImport = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '6.3.0') : false;
+      this.useLazyLoading = this.jhipsterVersion ? semver.gte(this.jhipsterVersion, '6.4.0') : false;
 
       this.entityFiles = shelljs.ls(jhipsterVar.jhipsterConfigDirectory).filter(function (file) {
         return file.match(/\.json$/);

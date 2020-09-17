@@ -12,7 +12,7 @@ import { UserRouteAccessService } from '../../shared';
 import { ElasticsearchReindexComponent } from './elasticsearch-reindex.component';
 
 export const elasticsearchReindexRoute: Route = {
-    path: 'elasticsearch-reindex',
+    path: <% if (useLazyLoading){ %>''<% }else{ %>'elasticsearch-reindex'<% } %>,
     component: ElasticsearchReindexComponent,
     data: {
         authorities: ['ROLE_ADMIN'],
