@@ -202,7 +202,7 @@ public class ElasticsearchIndexService {
                 .collect(Collectors.toList());
 
             int size = 100;
-            for (int i = 0; i <= jpaRepository.count() / size; i++) {
+            for (int i = 0; i < jpaRepository.count() / size; i++) {
                 <%_ if (usePageRequestOf) { _%>
                 Pageable page = PageRequest.of(i, size);
                 <%_ } else { _%>
