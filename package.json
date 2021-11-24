@@ -34,7 +34,7 @@
     "yeoman-assert": "^3.0.0",
     "coveralls": "^2.13.1",
     "nsp": "^2.6.3",
-    "eslint": "^4.1.0",
+    "eslint": "^8.3.0",
     "eslint-config-xo-space": "^0.16.0",
     "jest": "^20.0.0",
     "jest-cli": "^27.3.1"
