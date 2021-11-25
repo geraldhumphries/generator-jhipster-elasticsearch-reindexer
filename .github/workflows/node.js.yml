@@ -25,8 +25,6 @@ jobs:
             yeoman-version: 0.22.5
           - jhipster-version: 4.*
             yeoman-version: 1.1.1
-          - jhipster-version: 5.*
-            yeoman-version: 3.0.0
 
     steps:
     - uses: actions/checkout@v2
