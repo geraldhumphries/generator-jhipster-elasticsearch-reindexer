@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12]
-        jhipster-version: [2.*, 3.*, 4.*, 5.*, 6.*, 7.*, latest]
+        jhipster-version: [2.*, 3.*, 4.*, 5.*]
         include:
           - jhipster-version: 2.*
             yeoman-version: 0.22.2
@@ -25,6 +25,8 @@ jobs:
             yeoman-version: 0.22.5
           - jhipster-version: 4.*
             yeoman-version: 1.1.1
+          - jhipster-version: 5.*
+            yeoman-version: 3.0.0
 
     steps:
     - uses: actions/checkout@v2
