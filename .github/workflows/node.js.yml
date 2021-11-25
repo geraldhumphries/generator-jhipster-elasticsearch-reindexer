@@ -35,6 +35,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm ci generator-jhipster@${{ matrix.jhipster-version }} yeoman-generator@${{ matrix.yeoman-version }}
+    - run: npm install
+    - run: npm install generator-jhipster@${{ matrix.jhipster-version }} yeoman-generator@${{ matrix.yeoman-version }}
     - run: npm test
