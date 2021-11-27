@@ -18,6 +18,15 @@ jobs:
       matrix:
         node-version: [12]
         jhipster-version: [2.*, 3.*, 4.*, 5.*]
+        include:
+          - jhipster-version: 2.*
+            yeoman-version: 0.22.2
+          - jhipster-version: 3.*
+            yeoman-version: 0.22.5
+          - jhipster-version: 4.*
+            yeoman-version: 1.1.1
+          - jhipster-version: 5.*
+            yeoman-version: 3.0.0
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -25,6 +34,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm install generator-jhipster@${{ matrix.jhipster-version }}
+    - run: npm install
+    - run: npm install generator-jhipster@${{ matrix.jhipster-version }} yeoman-generator@${{ matrix.yeoman-version }}
     - run: npm test
