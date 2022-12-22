@@ -30,7 +30,7 @@
     "eslint": "^8.3.0",
     "jest": "^27.3.1",
     "yeoman-assert": "^3.1.1",
-    "yeoman-test": "^6.2.0"
+    "yeoman-test": "^7.1.0"
   },
   "peerDependencies": {
     "generator-jhipster": ">=2.26.2"
